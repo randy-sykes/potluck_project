@@ -1,1 +1,1 @@
-# lerd_potluck
+# Potluck
