@@ -1,17 +1,15 @@
+const express = require("express");
+const router = express.Router();
+const accountController = require("../controllers/accountController");
+
 // Account route to create an account
-app.post("/", (req, res) => {
-  res.send("CREATE account route");
-});
+router.post("/", accountController.createUserAccount);
 
 // Specific user account routes
-app.get("/:username", (req, res) => {
-  res.send("GET specific user account info.");
-});
+router.get("/:username", accountController.getUserAccount);
 
-app.put("/:username", (req, res) => {
-  res.send("UPDATE specific user account info.");
-});
+router.put("/:username", accountController.updateUserAccount);
 
-app.delete("/:username", (req, res) => {
-  res.send("DELETE specific user account info.");
-});
+router.delete("/:username", accountController.deleteUserAccount);
+
+module.exports = router;
