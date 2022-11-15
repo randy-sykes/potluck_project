@@ -9,13 +9,16 @@ if (process.env.NODE_ENV !== "production") {
 
 app.use(express.static("public"));
 
-// Load base routes to /
-app.use(require("./routes/base"));
-
 // Load recipes routes to /recipes
 app.use("/recipes", require("./routes/recipes"));
 
 // Load account routes to /account
 app.use("/account", require("./routes/account"));
+
+// Load base routes to /
+//  IMPORTANT:
+// ./routes/base has a wildcard in it to catch everything.
+// IT MUST BE AT THE BOTTOM!!!
+app.use(require("./routes/base"));
 
 app.listen(PORT, () => console.log(`potluck using port ${PORT}`));
