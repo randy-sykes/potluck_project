@@ -15,4 +15,7 @@ app.use(require("./routes/base"));
 // Load recipes routes to /recipes
 app.use("/recipes", require("./routes/recipes"));
 
+// Load account routes to /account
+app.use("/account", require("./routes/account"));
+
 app.listen(PORT, () => console.log(`potluck using port ${PORT}`));
