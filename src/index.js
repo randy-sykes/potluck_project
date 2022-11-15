@@ -8,5 +8,5 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 app.use(express.static("public"));
-
+app.use(require("./routes/base"));
 app.listen(PORT, () => console.log(`potluck using port ${PORT}`));
