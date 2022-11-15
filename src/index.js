@@ -9,4 +9,10 @@ if (process.env.NODE_ENV !== "production") {
 
 app.use(express.static("public"));
 
+// Load base routes to /
+app.use(require("./routes/base"));
+
+// Load recipes routes to /recipes
+app.use("/recipes", require("./routes/recipes"));
+
 app.listen(PORT, () => console.log(`potluck using port ${PORT}`));
