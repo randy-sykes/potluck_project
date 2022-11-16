@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const baseController = require("../controllers/baseController");
 
-router.get("/", (req, res) => {
-  res.send("GET Home route");
-});
+router.get("/", baseController.getRoot);
 
-router.get("*", (req, res) => {
-  res.status(404).send("Why are you here?");
-});
+router.get("*", baseController.getWildcard);
 
 module.exports = router;
