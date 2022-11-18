@@ -1,5 +1,7 @@
+const dataController = require("./dataController");
+
 const getAllRecipes = (req, res) => {
-  const data = fakeData;
+  const data = dataController.getAllRecipes;
   res.render("allRecipes.ejs", { data });
 };
 
