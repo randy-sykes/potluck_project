@@ -281,3 +281,16 @@ const getAllRecipes = () => {
   const data = getAllRecipesObj;
   return data;
 };
+
+const getRecipe = (recipe_id) => {
+  //TODO: Create query to get a specific recipe from database
+  // * Should return a object either with a recipe or empty
+  const id = Number(recipe_id);
+  const recipe = dataObjs.find((x) => x._id === id) || {};
+  return recipe;
+};
+
+module.exports = {
+  getAllRecipes,
+  getRecipe,
+};
