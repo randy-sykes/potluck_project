@@ -1,8 +1,8 @@
 const dataController = require("./dataController");
 
 const getAllRecipes = (req, res) => {
-  const data = dataController.getAllRecipes;
-  res.render("allRecipes.ejs", { data });
+  const recipes = dataController.getAllRecipes;
+  res.render("allRecipes.ejs", { recipes });
 };
 
 const createNewRecipe = (req, res) => {
@@ -10,7 +10,9 @@ const createNewRecipe = (req, res) => {
 };
 
 const getSpecificRecipe = (req, res) => {
-  res.send("GET Specific Recipe route");
+  const recipe_id = Number(req.params.recipe_id);
+  const recipe = dataController.getRecipe(recipe_id);
+  res.render("recipe.ejs", { recipe });
 };
 
 const updateSpecificRecipe = (req, res) => {
