@@ -1,7 +1,7 @@
 const dataController = require("./dataController");
 
 const getAllRecipes = (req, res) => {
-  const recipes = dataController.getAllRecipes;
+  const recipes = dataController.getAllRecipes();
   res.render("allRecipes.ejs", { recipes });
 };
 
@@ -20,7 +20,14 @@ const updateSpecificRecipe = (req, res) => {
 };
 
 const deleteSpecificRecipe = (req, res) => {
-  res.send("DELETE Specific Recipe route");
+  const recipe_id = Number(req.params.recipe_id);
+  const recipe = dataController.getRecipe(recipe_id);
+  if (user !== recipe.author) {
+    res.send("User did not create recipe.");
+  } else {
+    const result = dataController.deleteRecipe(recipe_id);
+    res.send("DELETE Specific Recipe route");
+  }
 };
 
 module.exports = {
