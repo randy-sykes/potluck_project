@@ -1,4 +1,10 @@
+const mongoose = require("mongoose");
 // TODO: Remove these object once we have the database functioning.
+
+// Pull in mongoDB config
+require("../helpers/connection");
+const { UserModel } = require("../models/user");
+
 const getAllRecipesObj = [
   {
     _id: 1,
