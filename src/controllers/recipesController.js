@@ -1,8 +1,26 @@
 const dataController = require("./dataController");
 
 const getAllRecipes = (req, res) => {
-  const recipes = dataController.getAllRecipes();
-  res.render("allRecipes.ejs", { recipes });
+  const data = dataController.getAllRecipes();
+  data
+    .then((result) => {
+      const recipes = result.map((recipe) => {
+        let retData = {
+          _id: recipe._id,
+          recipe_name: recipe.recipe_name,
+          description: recipe.description,
+          author: recipe.author,
+          source: recipe.source,
+          source_url: recipe.source_url,
+        };
+        if (!retData.author) retData.author = "";
+        return retData;
+      });
+      res.render("allRecipes.ejs", { recipes });
+    })
+    .catch((err) => {
+      res.render("errorPage.ejs", { error: err, msg: "Failed to get recipes" });
+    });
 };
 
 const createNewRecipe = (req, res) => {

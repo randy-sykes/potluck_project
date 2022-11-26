@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 // Pull in mongoDB config
 require("../helpers/connection");
 const { UserModel } = require("../models/user");
-
+const { RecipeModel } = require("../models/recipe");
 const getAllRecipesObj = [
   {
     _id: 1,
@@ -281,16 +281,13 @@ const dataObjs = [
   },
 ];
 
-const getAllRecipes = () => {
-  //TODO: Create query to get all recipes from database
-  // * Should return an Array of Recipe objects
-  const data = getAllRecipesObj;
-  return data;
+const getAllRecipes = async () => {
+  // * Returns result as a promise query to perform .then().catch() on
+  return await RecipeModel.find();
 };
 
 const getRecipe = (recipe_id) => {
-  //TODO: Create query to get a specific recipe from database
-  // * Should return a object either with a recipe or empty
+  // * Returns result as a promise query to perform .then().catch() on
   const recipe = dataObjs.find((x) => x._id === recipe_id) || {};
   return recipe;
 };

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const UserSchema = require("./user.js");
+const { userModel } = require("./user");
 
 const ingredientsSchema = new Schema({
   ingredient_name: {
@@ -27,7 +27,8 @@ const commentSchema = new Schema({
     default: Date.now,
   },
   comment_by: {
-    type: userSchema,
+    type: Schema.Types.ObjectId,
+    ref: "user",
   },
 });
 
@@ -55,7 +56,8 @@ const recipeSchema = new Schema({
     type: Number,
   },
   author: {
-    type: UserSchema,
+    type: Schema.Types.ObjectId,
+    ref: "user",
   },
   source: {
     type: String,
