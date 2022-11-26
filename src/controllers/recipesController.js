@@ -16,8 +16,7 @@ const getAllRecipes = (req, res) => {
         if (!retData.author) retData.author = "";
         return retData;
       });
-      res.send(recipes);
-      // res.render("allRecipes.ejs", { recipes });
+      res.render("allRecipes.ejs", { recipes });
     })
     .catch((err) => {
       res.render("errorPage.ejs", { error: err, msg: "Failed to get recipes" });
