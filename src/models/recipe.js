@@ -27,7 +27,8 @@ const commentSchema = new Schema({
     default: Date.now,
   },
   comment_by: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "user",
   },
 });
 
@@ -55,7 +56,8 @@ const recipeSchema = new Schema({
     type: Number,
   },
   author: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "user",
   },
   source: {
     type: String,
