@@ -1,5 +1,5 @@
 const getRoot = (req, res) => {
-  res.send("GET Home route");
+  res.render("home.ejs");
 };
 
 const getWildcard = (req, res) => {
