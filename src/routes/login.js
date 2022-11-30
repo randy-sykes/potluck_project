@@ -4,6 +4,6 @@ const loginController = require("../controllers/loginController");
 
 // Login route
 // loginController will handle all of the actual code for the login routes.
-router.post("/login", loginController.login);
+router.post("/", loginController.login);
 
 module.exports = router;
