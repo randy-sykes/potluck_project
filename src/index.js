@@ -8,9 +8,12 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // Load recipes routes to /recipes
 app.use("/recipes", require("./routes/recipes"));
+app.use("/login", require("./routes/login"));
 
 // Load account routes to /account
 app.use("/account", require("./routes/account"));
