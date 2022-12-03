@@ -1,7 +1,7 @@
 const dataController = require("./dataController");
 
-const getAllRecipes = (req, res) => {
-  return dataController.getAllRecipes();
+const getAllRecipes = async (req, res) => {
+  res.json(await dataController.getAllRecipes());
 };
 
 const createNewRecipe = (req, res) => {
@@ -11,7 +11,7 @@ const createNewRecipe = (req, res) => {
 const getSpecificRecipe = (req, res) => {
   const recipe_id = Number(req.params.recipe_id);
   const recipe = dataController.getRecipe(recipe_id);
-  res.render("recipe.ejs", { recipe });
+  res.json(recipe);
 };
 
 const updateSpecificRecipe = (req, res) => {
