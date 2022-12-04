@@ -1,26 +1,7 @@
 const dataController = require("./dataController");
 
-const getAllRecipes = (req, res) => {
-  const data = dataController.getAllRecipes();
-  data
-    .then((result) => {
-      const recipes = result.map((recipe) => {
-        let retData = {
-          _id: recipe._id,
-          recipe_name: recipe.recipe_name,
-          description: recipe.description,
-          author: recipe.author,
-          source: recipe.source,
-          source_url: recipe.source_url,
-        };
-        if (!retData.author) retData.author = "";
-        return retData;
-      });
-      res.render("allRecipes.ejs", { recipes });
-    })
-    .catch((err) => {
-      res.render("errorPage.ejs", { error: err, msg: "Failed to get recipes" });
-    });
+const getAllRecipes = async (req, res) => {
+  res.json(await dataController.getAllRecipes());
 };
 
 const createNewRecipe = (req, res) => {
@@ -30,7 +11,7 @@ const createNewRecipe = (req, res) => {
 const getSpecificRecipe = (req, res) => {
   const recipe_id = Number(req.params.recipe_id);
   const recipe = dataController.getRecipe(recipe_id);
-  res.render("recipe.ejs", { recipe });
+  res.json(recipe);
 };
 
 const updateSpecificRecipe = (req, res) => {
