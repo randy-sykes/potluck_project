@@ -55,6 +55,10 @@ const commentsController = require("../controllers/commentsController");
  *                         type: string
  *                         description: Object ID for the user that saved/created the recipe
  *                         example: 638cf0342ff1e8964f2952e4
+ *                       source:
+ *                         type: string
+ *                         description: Value is always potluck from the database
+ *                         example: potluck
  *                       ingredients:
  *                         type: array
  *                         description: 'Array of Ingredient objects'
