@@ -9,7 +9,6 @@ const ingredientsSchema = new Schema({
   },
   measurement: {
     type: String,
-    required: [true, "Please provide an ingredient measurement."],
   },
   amount: {
     type: String,
@@ -63,11 +62,6 @@ const recipeSchema = new Schema({
     type: String,
     required: true,
     default: "potluck",
-  },
-  source_url: {
-    type: String,
-    required: true,
-    default: "/recipe/" + mongoose.ObjectId,
   },
   tags: [{ type: String }],
   created_date: {
