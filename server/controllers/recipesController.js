@@ -1,5 +1,3 @@
-const dataController = require("./dataController");
-
 const { RecipeModel } = require("../models/recipe");
 
 const getAllRecipes = async (req, res) => {
@@ -7,7 +5,7 @@ const getAllRecipes = async (req, res) => {
     if (err) {
       res.status(500).json(err);
     } else {
-      res.json(result);
+      res.json({ data: result });
     }
   });
 };
