@@ -1,5 +1,3 @@
-const dataController = require("./dataController");
-
 const { RecipeModel } = require("../models/recipe");
 
 const getAllRecipes = async (req, res) => {
