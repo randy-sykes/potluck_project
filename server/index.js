@@ -1,5 +1,12 @@
 const express = require("express");
 const app = express();
+const swaggerUI = require("swagger-ui-express");
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerSpec = require("./docs/swagger-config");
+
+// To initialize the database
+require("./helpers/connection");
+
 const PORT = process.env.PORT || 3001;
 
 if (process.env.NODE_ENV !== "production") {
@@ -10,6 +17,13 @@ if (process.env.NODE_ENV !== "production") {
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Load swagger docs:
+app.use(
+  "/api-docs",
+  swaggerUI.serve,
+  swaggerUI.setup(require("./docs/swagger-config"))
+);
 
 // Load recipes routes to /recipes
 app.use("/recipes", require("./routes/recipes"));
