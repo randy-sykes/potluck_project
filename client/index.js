@@ -26,10 +26,8 @@ RECIPE ROUTES
 app.get("/recipes", (req, res) => {
   const endpoint = `${API_URI}/recipes`;
   request.get(endpoint, (error, response, body) => {
-    console.log("Got here");
     if (!error && response.statusCode === 200) {
-      console.log("Response came back without error");
-      const recipes = JSON.parse(body);
+      const recipes = JSON.parse(body)?.data;
       res.render("allRecipes.ejs", { recipes });
     } else {
       res.render("error.ejs");
