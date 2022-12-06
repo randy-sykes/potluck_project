@@ -51,6 +51,7 @@ components:
         source:
           type: string
           description: Value is always potluck from the database
+          example: potluck
         ingredients:
           type: array
           description: 'Array of Ingredient objects'
@@ -75,19 +76,6 @@ components:
         - cook_time
         - author
         - ingredients
-      example:
-        recipe_name: "Best Recipe"
-        description: "Good Food"
-        directions: "Cook it"
-        servings: 8
-        prep_time: 5
-        cook_time: 20
-        author: 638cf0342ff1e8964f2952e4
-        source: potluck
-        ingredients:
-          ingredient_name: Olive Oil
-          measurement: tablespoon
-          amount: 1
 
     Error: # Can be referenced as "#/components/schemas/Error"
       type: object
@@ -97,14 +85,25 @@ components:
         message:
           type: string
 
+
   # Reusable path, query, header and cookie parameters
   parameters: # Referenced by "#/components/parameters/<entryName>"
   # Security scheme definitions
   securitySchemes: # Referenced by "#/components/securitySchemes/<entryName>"
   # Reusable request bodies
   requestBodies: # Referenced by "#/components/requestBodies/<entryName>"
+    Recipe: # Referenced by "#/components/requestBodies/Recipe"
+      $ref: "#/components/schemas/Recipe"
   # Reusable responses, such as 401 Unauthorized or 400 Bad Request
   responses: # Referenced by "#/components/responses/<entryName>"
+
+    RecipeResponse:
+      description: Successfully found/updated/created the recipe
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/examples/ReturnRecipeExample"
+
     404NotFound: # Can be referenced as '#/components/responses/404NotFound'
       description: The specified resource was not found.
 
@@ -171,7 +170,51 @@ paths:
                   data:
                     type: array
                     $ref: "#/components/examples/ReturnRecipeExample"
+    post:
+      summary: Create a new Recipe when you provide the correct data.
+      description: Create a new Recipe using required data.
+      requestBody:
+        description: Should be a recipe object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipe:
+                  type: object
+                  $ref: "#/components/requestBodies/Recipe"
 
+      responses:
+        "201":
+          $ref: "#/components/responses/RecipeResponse"
+
+        "406":
+          description: Failure due to schema mismatch.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Error name "ValidationError"
+                    example: ValidationError
+                  message:
+                    type: string
+                    description: Message that explains what is missing.
+                    example: "recipes validation failed: description: Recipe description required."
+        "409":
+          description: Failure due to name existing.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message "Recipe already exists with that name."
+                    example: Recipe already exists with that name.
 
 
 
