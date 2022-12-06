@@ -229,17 +229,6 @@ router.get("/", recipesController.getAllRecipes);
  *                             comment_by:
  *                               type: string
  *                               description: User ID Object
- *       403:
- *         description: Failure due to name existing.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Error message "Recipe already exists with that name."
- *                   example: Recipe already exists with that name.
  *       406:
  *         description: Failure due to schema mismatch.
  *         content:
@@ -255,6 +244,17 @@ router.get("/", recipesController.getAllRecipes);
  *                   type: string
  *                   description: Message that explains what is missing.
  *                   example: "recipes validation failed: description: Recipe description required."
+ *       409:
+ *         description: Failure due to name existing.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message "Recipe already exists with that name."
+ *                   example: Recipe already exists with that name.
  *
  *
  */

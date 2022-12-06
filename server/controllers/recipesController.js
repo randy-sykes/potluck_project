@@ -15,7 +15,7 @@ const createNewRecipe = async (req, res) => {
   const recipe = req.body.recipe;
   const recipeExists = await RecipeModel.exists({ recipe_name: recipe_name });
   if (recipeExists) {
-    res.status(403).json({ error: "Recipe already exists with that name." });
+    res.status(409).json({ error: "Recipe already exists with that name." });
   } else {
     RecipeModel.create({ ...recipe }, (err, result) => {
       if (err) {
