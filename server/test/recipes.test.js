@@ -240,15 +240,21 @@ describe("recipe route tests", function () {
   it("GET /api/recipes should now return an array with 1 entry from the database", (done) => {
     chai
       .request(server)
-      .get("/api/recipes")
+      .post("/api/recipes")
+      .send(testObj.newRecipeSuccess)
       .end((err, res) => {
-        res.should.have.status(200);
-        res.body.should.be.a("array");
-        res.body.length.should.be.equal(1);
-        expect(res.body[0].recipe_name).to.equal(
-          testObj.newRecipeSuccess.recipe.recipe_name
-        );
-        done();
+        chai
+          .request(server)
+          .get("/api/recipes")
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a("array");
+            res.body.length.should.be.equal(1);
+            expect(res.body[0].recipe_name).to.equal(
+              testObj.newRecipeSuccess.recipe.recipe_name
+            );
+            done();
+          });
       });
   });
 });

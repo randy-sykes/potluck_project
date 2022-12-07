@@ -97,17 +97,6 @@ describe("Testing the different routes and methods for /user", () => {
         },
       },
     },
-    {
-      it: "fail if provided the same email after someone is registered with it.",
-      opt: {
-        status: 409,
-        postData: userTestObjs.successful,
-        response: {
-          error: "UserExists",
-          message: `User already exists with email: ${userTestObjs.successful.email}`,
-        },
-      },
-    },
   ];
 
   it("POST /api/user/register should return an error message with no data passed", (done) => {
@@ -137,5 +126,28 @@ describe("Testing the different routes and methods for /user", () => {
           done();
         });
     });
+  });
+
+  it(`POST /api/user/register should fail if provided the same email after someone is registered with it.`, (done) => {
+    const expectedResponse = {
+      error: "UserExists",
+      message: `User already exists with email: ${userTestObjs.successful.email}`,
+    };
+    chai
+      .request(server)
+      .post("/api/user/register")
+      .send(userTestObjs.successful)
+      .end((err, res) => {
+        chai
+          .request(server)
+          .post("/api/user/register")
+          .send(userTestObjs.successful)
+          .end((err, res) => {
+            res.should.have.status(409);
+            let body = res.body;
+            expect(body).to.deep.equal(expectedResponse);
+            done();
+          });
+      });
   });
 });
