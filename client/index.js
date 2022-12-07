@@ -3,7 +3,7 @@ const express = require("express");
 const request = require("request");
 const app = express();
 const PORT = process.env.PORT || 3000;
-const API_URI = process.env.POTLUCK_URI || "http://localhost:3001";
+const API_URI = process.env.POTLUCK_URI || "http://localhost:3001/api";
 
 if (process.env.NODE_ENV !== "production") {
   const morgan = require("morgan");
