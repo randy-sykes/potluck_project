@@ -1,6 +1,3 @@
-process.env.NODE_ENV = "test";
-
-const { RecipeModel } = require("../models/recipe");
 const { UserModel } = require("../models/user");
 const chai = require("chai");
 const expect = chai.expect;
@@ -9,18 +6,6 @@ const chaiHttp = require("chai-http");
 const server = require("../server");
 
 chai.use(chaiHttp);
-
-before((done) => {
-  RecipeModel.deleteMany({}, function (err) {});
-  UserModel.deleteMany({}, function (err) {});
-  done();
-});
-
-after((done) => {
-  RecipeModel.deleteMany({}, function (err) {});
-  UserModel.deleteMany({}, function (err) {});
-  done();
-});
 
 describe("recipe route tests", function () {
   let user = new UserModel({

@@ -1,7 +1,5 @@
 process.env.NODE_ENV = "test";
 
-const { RecipeModel } = require("../models/recipe");
-const { UserModel } = require("../models/user");
 const chai = require("chai");
 const expect = chai.expect;
 const should = chai.should();
