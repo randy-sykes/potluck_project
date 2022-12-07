@@ -27,7 +27,7 @@ const createNewRecipe = async (req, res) => {
           .status(406)
           .json({ name: newRecipe.error, message: newRecipe.message });
       } else {
-        res.json(newRecipe);
+        res.status(201).json(result);
       }
     }
   }
