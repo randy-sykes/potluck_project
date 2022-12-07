@@ -2,7 +2,7 @@ const { RecipeModel } = require("../models/recipe");
 const dataController = require("./dataController");
 
 const getAllRecipes = async (req, res) => {
-  const result = await dataController.getAllRecipes();
+  const result = await dataController.getAllRecipesInDB();
   if (result?.error) {
     res.status(500).json({ error: result.message });
   } else {
@@ -20,7 +20,7 @@ const createNewRecipe = async (req, res) => {
     if (recipeExists) {
       res.status(409).json({ error: "Recipe already exists with that name." });
     } else {
-      const newRecipe = await dataController.createNewRecipe(recipe);
+      const newRecipe = await dataController.createNewRecipeInDB(recipe);
       if (newRecipe?.error) {
         res
           .status(406)
@@ -34,7 +34,7 @@ const createNewRecipe = async (req, res) => {
 
 const getSpecificRecipe = (req, res) => {
   const recipe_id = Number(req.params.recipe_id);
-  const recipe = dataController.getRecipe(recipe_id);
+  const recipe = dataController.getRecipeInDB(recipe_id);
   res.json(recipe);
 };
 
@@ -44,11 +44,11 @@ const updateSpecificRecipe = (req, res) => {
 
 const deleteSpecificRecipe = (req, res) => {
   const recipe_id = Number(req.params.recipe_id);
-  const recipe = dataController.getRecipe(recipe_id);
+  const recipe = dataController.getRecipeInDB(recipe_id);
   if (user !== recipe.author) {
     res.send("User did not create recipe.");
   } else {
-    const result = dataController.deleteRecipe(recipe_id);
+    const result = dataController.deleteRecipeInDB(recipe_id);
     res.send("DELETE Specific Recipe route");
   }
 };
