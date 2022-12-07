@@ -9,6 +9,8 @@ require("./helpers/connection");
 
 const PORT = process.env.PORT || 3001;
 
+require("./helpers/connection");
+
 if (process.env.NODE_ENV !== "production") {
   const morgan = require("morgan");
   app.use(morgan("dev"));
