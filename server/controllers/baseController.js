@@ -1,5 +1,5 @@
 const getRoot = (req, res) => {
-  res.render("home.ejs");
+  res.end();
 };
 
 const getWildcard = (req, res) => {

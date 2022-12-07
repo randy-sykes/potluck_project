@@ -1,5 +1,10 @@
 const express = require("express");
 const app = express();
+const swaggerUI = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerSpec = YAML.load("./docs/swagger.yaml");
+
+
 const PORT = process.env.PORT || 3001;
 
 // Load config from .env files
@@ -10,16 +15,21 @@ if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
-app.use(express.static("public"));
+// To initialize the database
+require("./helpers/connection");
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Load swagger docs:
+app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+
 // Load recipes routes to /recipes
-app.use("/recipes", require("./routes/recipes"));
-app.use("/login", require("./routes/login"));
+app.use("/api/recipes", require("./routes/recipes"));
+app.use("/api/login", require("./routes/login"));
 
 // Load account routes to /account
-app.use("/account", require("./routes/account"));
+app.use("/api/account", require("./routes/account"));
 
 // Load base routes to /
 //  IMPORTANT:
