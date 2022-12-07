@@ -44,7 +44,7 @@ describe("Testing the different routes and methods for /user", () => {
     {
       it: "fail when provided data missing the first_name.",
       opt: {
-        status: 400,
+        status: 422,
         postData: userTestObjs.missingFirstName,
         response: { error: "MissingFields", missingFields: ["first_name"] },
       },
@@ -52,7 +52,7 @@ describe("Testing the different routes and methods for /user", () => {
     {
       it: "fail when provided data missing the last_name.",
       opt: {
-        status: 400,
+        status: 422,
         postData: userTestObjs.missingLastName,
         response: { error: "MissingFields", missingFields: ["last_name"] },
       },
@@ -60,7 +60,7 @@ describe("Testing the different routes and methods for /user", () => {
     {
       it: "fail when provided data missing the email.",
       opt: {
-        status: 400,
+        status: 422,
         postData: userTestObjs.missingEmail,
         response: { error: "MissingFields", missingFields: ["email"] },
       },
@@ -68,7 +68,7 @@ describe("Testing the different routes and methods for /user", () => {
     {
       it: "fail when provided data missing the password.",
       opt: {
-        status: 400,
+        status: 422,
         postData: userTestObjs.missingPassword,
         response: { error: "MissingFields", missingFields: ["password"] },
       },
@@ -76,7 +76,7 @@ describe("Testing the different routes and methods for /user", () => {
     {
       it: "fail when provided data missing the email and password.",
       opt: {
-        status: 400,
+        status: 422,
         postData: userTestObjs.missingEmailAndPassword,
         response: {
           error: "MissingFields",
