@@ -45,58 +45,67 @@ describe("Testing the different routes and methods for /user", () => {
       it: "fail when provided data missing the first_name.",
       opt: {
         status: 400,
-        message: `MissingFields`,
         postData: userTestObjs.missingFirstName,
-        missingFields: ["first_name"],
-        fail: true,
+        response: { error: "MissingFields", missingFields: ["first_name"] },
       },
     },
     {
       it: "fail when provided data missing the last_name.",
       opt: {
         status: 400,
-        message: `MissingFields`,
         postData: userTestObjs.missingLastName,
-        missingFields: ["last_name"],
-        fail: true,
+        response: { error: "MissingFields", missingFields: ["last_name"] },
       },
     },
     {
       it: "fail when provided data missing the email.",
       opt: {
         status: 400,
-        message: `MissingFields`,
         postData: userTestObjs.missingEmail,
-        missingFields: ["email"],
-        fail: true,
+        response: { error: "MissingFields", missingFields: ["email"] },
       },
     },
     {
       it: "fail when provided data missing the password.",
       opt: {
         status: 400,
-        message: `MissingFields`,
         postData: userTestObjs.missingPassword,
-        missingFields: ["password"],
-        fail: true,
+        response: { error: "MissingFields", missingFields: ["password"] },
       },
     },
     {
       it: "fail when provided data missing the email and password.",
       opt: {
         status: 400,
-        message: `MissingFields`,
         postData: userTestObjs.missingEmailAndPassword,
-        missingFields: ["email", "password"],
-        fail: true,
+        response: {
+          error: "MissingFields",
+          missingFields: ["email", "password"],
+        },
       },
     },
     {
       it: "be successful if provided correct data.",
       opt: {
         status: 201,
-        message: `Created user for email: ${userTestObjs.successful.email}`,
+
         postData: userTestObjs.successful,
+        randomId: true,
+        response: {
+          message: `Created user for email: ${userTestObjs.successful.email}`,
+          userId: "",
+        },
+      },
+    },
+    {
+      it: "fail if provided the same email after someone is registered with it.",
+      opt: {
+        status: 409,
+        postData: userTestObjs.successful,
+        response: {
+          error: "UserExists",
+          message: `User already exists with email: ${userTestObjs.successful.email}`,
+        },
       },
     },
   ];
@@ -120,13 +129,11 @@ describe("Testing the different routes and methods for /user", () => {
         .send(run.opt.postData)
         .end((err, res) => {
           res.should.have.status(run.opt.status);
-          let body = res.body?.error || res.body.message;
-          expect(body).to.equal(run.opt.message);
-          if (run.opt.fail) {
-            expect(res.body.missingFields).to.be.deep.equal(
-              run.opt.missingFields
-            );
+          let body = res.body;
+          if (run.opt.randomId) {
+            run.opt.response.userId = body.userId;
           }
+          expect(body).to.deep.equal(run.opt.response);
           done();
         });
     });
