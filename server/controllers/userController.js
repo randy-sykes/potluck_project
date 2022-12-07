@@ -4,7 +4,20 @@ const loginUser = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  res.send("CREATE user route");
+  // Required keys for user obj
+  const keys = ["first_name", "last_name", "email", "password"];
+  const user = req.body;
+  const missingFields = keys.filter((key) => !user.hasOwnProperty(key));
+  if (Object.keys(user).length === 0) {
+    res.status(400).json({ error: "Please provide a user object." });
+  } else if (missingFields) {
+    res.status(400).json({
+      error: "MissingFields",
+      missingFields: missingFields,
+    });
+  } else {
+    res.status(999).send("boo");
+  }
 };
 
 const getUser = (req, res) => {
