@@ -11,10 +11,8 @@ const connectionObject = {
 mongoose
   .connect(endpoint, connectionObject)
   .then(() => {
-    if (
-      process.env.NODE_ENV !== "test" &&
-      process.env.NODE_ENV !== "production"
-    )
+    // Check to not show connected message in production or test env
+    if (!["production", "test"].includes(process.env.NODE_ENV))
       console.log(`Connected to ${MONGO_DB} database`);
   })
   .catch((error) => console.log(`ERROR: connecting to ${MONGO_DB}: `, error));

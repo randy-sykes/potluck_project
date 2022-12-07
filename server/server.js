@@ -6,8 +6,8 @@ const swaggerSpec = YAML.load("./docs/swagger.yaml");
 
 // Load config from .env files
 require("dotenv-flow").config();
-console.log(process.env.NODE_ENV);
-if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {
+// Check to not start morgan if running in test or production env
+if (!["production", "test"].includes(process.env.NODE_ENV)) {
   const morgan = require("morgan");
   server.use(morgan("dev"));
 }
