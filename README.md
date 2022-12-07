@@ -1,6 +1,9 @@
 # Potluck
 ## SERVER
 Everything for the SERVER section should be done from the SERVER folder
+### Swagger page
+Locally found at ```http://localhost:3001/api/docs```
+
 ### Setup
 Before running the application ensure you have a .env file created in the SERVER folder. It MUST contain these 4 values currently:
 The information is what I sent to everyone individually. It breaks out like this:
@@ -27,7 +30,7 @@ Everything for the CLIENT section should be done from the CLIENT folder.
 ### SETUP
 You can use a .env file to override the client default config with this value contained within:
 ```
-POTLUCK_URI=<URI:PORT>
+POTLUCK_URI=<URI:PORT>/api
 ```
 Install required packages:
 ```npm i```
