@@ -2,6 +2,9 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Load config from .env files
+require("dotenv-flow").config();
+
 if (process.env.NODE_ENV !== "production") {
   const morgan = require("morgan");
   app.use(morgan("dev"));
