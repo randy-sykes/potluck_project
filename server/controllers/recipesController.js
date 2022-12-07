@@ -6,7 +6,7 @@ const getAllRecipes = async (req, res) => {
   if (result?.error) {
     res.status(500).json({ error: result.message });
   } else {
-    res.json({ result });
+    res.json(result);
   }
 };
 
