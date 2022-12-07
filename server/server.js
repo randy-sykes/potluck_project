@@ -4,16 +4,14 @@ const swaggerUI = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerSpec = YAML.load("./docs/swagger.yaml");
 
-// Load config from .env files
-require("dotenv-flow").config();
+// To initialize the database
+require("./helpers/connection");
+
 // Check to not start morgan if running in test or production env
 if (!["production", "test"].includes(process.env.NODE_ENV)) {
   const morgan = require("morgan");
   server.use(morgan("dev"));
 }
-
-// To initialize the database
-require("./helpers/connection");
 
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
