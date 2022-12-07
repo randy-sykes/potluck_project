@@ -1,5 +1,5 @@
 const getRoot = (req, res) => {
-  res.end();
+  res.send("You made it, but there is nothing here. Check out /api/docs");
 };
 
 const getWildcard = (req, res) => {

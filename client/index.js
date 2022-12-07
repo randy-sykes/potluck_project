@@ -27,7 +27,7 @@ app.get("/recipes", (req, res) => {
   const endpoint = `${API_URI}/recipes`;
   request.get(endpoint, (error, response, body) => {
     if (!error && response.statusCode === 200) {
-      const recipes = JSON.parse(body)?.data;
+      const recipes = JSON.parse(body);
       res.render("allRecipes.ejs", { recipes });
     } else {
       res.render("error.ejs");
