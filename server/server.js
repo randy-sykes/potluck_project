@@ -6,8 +6,8 @@ const swaggerSpec = YAML.load("./docs/swagger.yaml");
 
 // Load config from .env files
 require("dotenv-flow").config();
-
-if (process.env.NODE_ENV !== "production") {
+console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {
   const morgan = require("morgan");
   server.use(morgan("dev"));
 }
