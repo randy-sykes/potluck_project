@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  title: Gather & Grub REST API
+  description: MongoDB ExpressJS NodeJS REST API
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001/api/
+    description: Localhost development server
+components:
+  # Reusable schemas/data models
+  schemas: # Referenced by "#/components/schemas/<entryName>"
+    User: # Referenced by "#/components/schemas/User"
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        joined:
+          type: string
+          description: Date user joined Gather & Grub
+
+    Recipe: # Referenced by "#/components/schemas/Recipe"
+      type: object
+      properties:
+        recipe_name:
+          type: string
+          description: Name of the recipe
+        description:
+          type: string
+          description: Description of the recipe
+        directions:
+          type: string
+          description: This is the instructions for how to create the specific recipe
+        servings:
+          type: number
+          description: Number value for number of servings
+        prep_time:
+          type: number
+          description: Number value for how long it takes to prep in minutes
+        cook_time:
+          type: number
+          description: Number value for how long it takes to cook in minutes
+        author:
+          type: string
+          description: Object ID for the user that saved/created the recipe
+        source:
+          type: string
+          description: Value is always potluck from the database
+          example: potluck
+        ingredients:
+          type: array
+          description: 'Array of Ingredient objects'
+          items:
+            type: object
+            properties:
+              ingredient_name:
+                type: string
+                description: Name of the ingredient
+              measurement:
+                type: string
+                description: Measurement of the ingredient
+              amount:
+                type: string
+                description: Amount of the ingredient's measurement
+      required:
+        - recipe_name
+        - description
+        - directions
+        - servings
+        - prep_time
+        - cook_time
+        - author
+        - ingredients
+
+    Error: # Can be referenced as "#/components/schemas/Error"
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+
+
+  # Reusable path, query, header and cookie parameters
+  parameters: # Referenced by "#/components/parameters/<entryName>"
+  # Security scheme definitions
+  securitySchemes: # Referenced by "#/components/securitySchemes/<entryName>"
+  # Reusable request bodies
+  requestBodies: # Referenced by "#/components/requestBodies/<entryName>"
+    Recipe: # Referenced by "#/components/requestBodies/Recipe"
+      $ref: "#/components/schemas/Recipe"
+  # Reusable responses, such as 401 Unauthorized or 400 Bad Request
+  responses: # Referenced by "#/components/responses/<entryName>"
+
+    RecipeResponse:
+      description: Successfully found/updated/created the recipe
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/examples/ReturnRecipeExample"
+
+    404NotFound: # Can be referenced as '#/components/responses/404NotFound'
+      description: The specified resource was not found.
+
+    ImageResponse: # Can be referenced as '#/components/responses/ImageResponse'
+      description: An image.
+      content:
+        image/*:
+          schema:
+            type: string
+            format: binary
+
+    GenericError: # Can be referenced as '#/components/responses/GenericError'
+      description: An error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  # Reusable response headers
+  headers: # Referenced by "#/components/headers/<entryName>"
+  # Reusable Examples
+  examples: # Referenced by "#/components/examples/<entryName>"
+    ReturnRecipeExample: # Referenced by "#/components/examples/ReturnRecipeExample"
+      example:
+        -
+          "_id": "638f5a2ab664e686d05211ac"
+          "recipe_name": "Best Recipe"
+          "description": "Good Food"
+          "ingredients":
+            -
+              "ingredient_name": "Olive Oil"
+              "measurement": "tablespoon"
+              "amount": "1"
+              "_id": "638f5a2ab664e686d05211ad"
+          "directions": "Cook it"
+          "servings": 8
+          "prep_time": 5
+          "cook_time": 20
+          "author": "638cf0342ff1e8964f2952e4"
+          "source": "potluck"
+          "tags": []
+          "created_date": "2022-12-06T15:05:14.617Z"
+          "comments": []
+          "__v": 0
+  # Reusable links
+  links: # Referenced by "#/components/links/<entryName>"
+  # Reusable callbacks
+  callbacks: # Referenced by "#/components/callbacks/<entryName>"
+
+paths:
+
+  /recipes:
+    get:
+      summary: Get a list(array) of all Recipes in the database.
+      description: Retrieve an array of Recipe Objects.
+      responses:
+        '200':
+          description: A list (array) of Recipes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    $ref: "#/components/examples/ReturnRecipeExample"
+    post:
+      summary: Create a new Recipe when you provide the correct data.
+      description: Create a new Recipe using required data.
+      requestBody:
+        description: Should be a recipe object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipe:
+                  type: object
+                  $ref: "#/components/requestBodies/Recipe"
+
+      responses:
+        "201":
+          $ref: "#/components/responses/RecipeResponse"
+
+        "406":
+          description: Failure due to schema mismatch.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Error name "ValidationError"
+                    example: ValidationError
+                  message:
+                    type: string
+                    description: Message that explains what is missing.
+                    example: "recipes validation failed: description: Recipe description required."
+        "409":
+          description: Failure due to name existing.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message "Recipe already exists with that name."
+                    example: Recipe already exists with that name.
+
+
+
+
+
+
