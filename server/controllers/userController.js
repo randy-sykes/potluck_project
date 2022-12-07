@@ -13,7 +13,7 @@ const createUser = async (req, res) => {
     res.status(400).json({ error: "Please provide a user object." });
     return;
   } else if (missingFields.length !== 0) {
-    res.status(400).json({
+    res.status(422).json({
       error: "MissingFields",
       missingFields: missingFields,
     });
