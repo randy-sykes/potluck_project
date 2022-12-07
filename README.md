@@ -1,10 +1,13 @@
 # Potluck
 ## SERVER
 Everything for the SERVER section should be done from the SERVER folder
+
 ### Swagger page
 Locally found at ```http://localhost:3001/api/docs```
 
+
 ### Setup
+You can utilize a .env file for every environment. i.e can use .env.dev and .env.test are set to be used by the package.json but will default to .env only if no other exists.
 Before running the application ensure you have a .env file created in the SERVER folder. It MUST contain these 4 values currently:
 The information is what I sent to everyone individually. It breaks out like this:
 ```"mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_URL}/${MONGO_DB}?retryWrites=true&w=majority"```

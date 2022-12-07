@@ -6,6 +6,11 @@ info:
 servers:
   - url: http://localhost:3001/api/
     description: Localhost development server
+tags:
+  - name: recipes
+    description: Create, Read, Update and Delete recipes.
+  - name: user
+    description: Operations on the user.
 components:
   # Reusable schemas/data models
   schemas: # Referenced by "#/components/schemas/<entryName>"
@@ -157,6 +162,8 @@ paths:
 
   /recipes:
     get:
+      tags:
+        - recipes
       summary: Get a list(array) of all Recipes in the database.
       description: Retrieve an array of Recipe Objects.
       responses:
@@ -165,12 +172,11 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    $ref: "#/components/examples/ReturnRecipeExample"
+                type: array
+                $ref: "#/components/examples/ReturnRecipeExample"
     post:
+      tags:
+        - recipes
       summary: Create a new Recipe when you provide the correct data.
       description: Create a new Recipe using required data.
       requestBody:
@@ -215,8 +221,6 @@ paths:
                     type: string
                     description: Error message "Recipe already exists with that name."
                     example: Recipe already exists with that name.
-
-
 
 
 
