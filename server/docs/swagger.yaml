@@ -89,8 +89,6 @@ components:
           type: string
         message:
           type: string
-
-
   # Reusable path, query, header and cookie parameters
   parameters: # Referenced by "#/components/parameters/<entryName>"
   # Security scheme definitions
@@ -99,6 +97,22 @@ components:
   requestBodies: # Referenced by "#/components/requestBodies/<entryName>"
     Recipe: # Referenced by "#/components/requestBodies/Recipe"
       $ref: "#/components/schemas/Recipe"
+
+    User:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: First_name
+        last_name:
+          type: string
+          example: Last_name
+        email:
+          type: string
+          example: first_last@example.com
+        password:
+          type: string
+          example: Testing123
   # Reusable responses, such as 401 Unauthorized or 400 Bad Request
   responses: # Referenced by "#/components/responses/<entryName>"
 
@@ -222,6 +236,70 @@ paths:
                     description: Error message "Recipe already exists with that name."
                     example: Recipe already exists with that name.
 
+  /user/register:
+    post:
+      tags:
+        - users
+      summary: Create a new user.
+      description: When provided the required object will create a new user
+      requestBody:
+        description: A user request object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/requestBodies/User"
+      responses:
+        "201":
+          description: Successfully created requested user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Created user for email: test@example.com"
+                  userId:
+                    type: string
+                    example: 638d2f39fea819d7bcb80937
+        "400":
+          description: Failure due to empty request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Please provide a user object"
+        "409":
+          description: Failure due to email already existing.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: UserExists
+                  message:
+                    type: string
+                    example: "User already exists with email: test@example.com"
+        "422":
+          description: Failure due to missing fields in request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: MissingFields
+                  missingFields:
+                    type: array
+                    example: ["first_name", "last_name"]
 
 
 
