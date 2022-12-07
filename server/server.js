@@ -23,10 +23,9 @@ server.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 // Load recipes routes to /recipes
 server.use("/api/recipes", require("./routes/recipes"));
-server.use("/api/login", require("./routes/login"));
 
 // Load account routes to /account
-server.use("/api/account", require("./routes/account"));
+server.use("/api/user", require("./routes/user"));
 
 // Load base routes to /
 //  IMPORTANT:
