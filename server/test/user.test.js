@@ -1,6 +1,3 @@
-process.env.NODE_ENV = "test";
-
-const { UserModel } = require("../models/user");
 const chai = require("chai");
 const expect = chai.expect;
 const should = chai.should();
@@ -8,16 +5,6 @@ const chaiHttp = require("chai-http");
 const server = require("../server");
 
 chai.use(chaiHttp);
-
-before((done) => {
-  UserModel.deleteMany({}, function (err) {});
-  done();
-});
-
-after((done) => {
-  UserModel.deleteMany({}, function (err) {});
-  done();
-});
 
 describe("Testing the different routes and methods for /user", () => {
   const userTestObjs = {
@@ -104,14 +91,14 @@ describe("Testing the different routes and methods for /user", () => {
         fail: true,
       },
     },
-    // {
-    //   it: "be successful if provided correct data.",
-    //   opt: {
-    //     status: 201,
-    //     message: `Created user for email: ${userTestObjs.successful.email}`,
-    //     postData: userTestObjs.successful,
-    //   },
-    // },
+    {
+      it: "be successful if provided correct data.",
+      opt: {
+        status: 201,
+        message: `Created user for email: ${userTestObjs.successful.email}`,
+        postData: userTestObjs.successful,
+      },
+    },
   ];
 
   it("POST /api/user/register should return an error message with no data passed", (done) => {
