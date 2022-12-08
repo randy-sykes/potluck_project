@@ -81,3 +81,19 @@ h1 {
 .card-body {
     text-align: center;
 }
+
+.card {
+    background-color: #FFA384;
+}
+
+.decisions {
+    text-align: center;
+}
+
+.row {
+    margin-top: 15px;
+}
+
+.card-body {
+    text-align: center;
+}
