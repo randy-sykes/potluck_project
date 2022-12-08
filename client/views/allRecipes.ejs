@@ -1,3 +1,115 @@
+<%- include('partials/header') %>
+<%- include('partials/modal') %>
+
+<h1>Decisions, Decisions!</h1>
+
+
+//add cards
+
+<div class="row">
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body">
+        
+        <a href="#" class="btn btn-primary">-Recipe here-</a>
+      </div>
+        <img src="assets/testpic.jpeg" class="card-img-bottom" alt="...">
+      
+    </div>
+  </div>
+  <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          
+          <a href="#" class="btn btn-primary">-Recipe here-</a>
+        </div>
+          <img src="assets/testpic.jpeg" class="card-img-bottom" alt="...">
+        
+      </div>
+    </div>
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body">
+        
+        <a href="#" class="btn btn-primary">-Recipe here-</a>
+      </div>
+        <img src="assets/testpic.jpeg" class="card-img-bottom" alt="...">
+      
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body">
+        
+        <a href="#" class="btn btn-primary">-Recipe here-</a>
+      </div>
+        <img src="assets/testpic.jpeg" class="card-img-bottom" alt="...">
+      
+    </div>
+  </div>
+  <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          
+          <a href="#" class="btn btn-primary">-Recipe here-</a>
+        </div>
+          <img src="assets/testpic.jpeg" class="card-img-bottom" alt="...">
+       
+      </div>
+    </div>
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body">
+        
+        <a href="#" class="btn btn-primary">-Recipe here-</a>
+      </div>
+        <img src="assets/testpic.jpeg" class="card-img-bottom" alt="...">
+      
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body">
+        
+        <a href="#" class="btn btn-primary">-Recipe here-</a>
+      </div>
+        <img src="assets/testpic.jpeg" class="card-img-bottom" alt="...">
+      
+    </div>
+  </div>
+  <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          
+          <a href="#" class="btn btn-primary">-Recipe here-</a>
+        </div>
+          <img src="assets/testpic.jpeg" class="card-img-bottom" alt="...">
+        
+      </div>
+    </div>
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body">
+        
+        <a href="#" class="btn btn-primary">-Recipe here-</a>
+      </div>
+        <img src="assets/testpic.jpeg" class="card-img-bottom" alt="...">
+      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
 <% recipes.forEach((recipe) => { %>
   <div>
     <h3><a href="/recipes/<%= recipe._id %>"><%= recipe.recipe_name %></a></h3>
@@ -5,3 +117,5 @@
   </div>
 
 <% }) %>
+
+<%- include('partials/footer') %>
