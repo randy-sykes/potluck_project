@@ -6,7 +6,7 @@ const server = require("../server");
 
 chai.use(chaiHttp);
 
-describe("Testing the different routes and methods for /user", () => {
+describe("The different tests for /user/register", () => {
   const userTestObjs = {
     successful: {
       first_name: "Test",
@@ -148,6 +148,101 @@ describe("Testing the different routes and methods for /user", () => {
             expect(body).to.deep.equal(expectedResponse);
             done();
           });
+      });
+  });
+});
+
+describe("LOGIN - The different tests for /user/login", () => {
+  var userId;
+  const userData = {
+    first_name: "Test",
+    last_name: "Successful",
+    email: "test@example.com",
+    password: "Testing123",
+  };
+
+  beforeEach((done) => {
+    chai
+      .request(server)
+      .post("/api/user/register")
+      .send(userData)
+      .end((err, res) => {
+        if (err) throw err;
+        userId = res.body.userId;
+        done();
+      });
+  });
+
+  it("should fail to log in when provided no login information", (done) => {
+    chai
+      .request(server)
+      .post("/api/user/login")
+      .send()
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(400);
+      });
+    done();
+  });
+
+  it("should fail to log in when provided just the password", (done) => {
+    chai
+      .request(server)
+      .post("/api/user/login")
+      .send({
+        password: "incorrect password",
+      })
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(400);
+        done();
+      });
+  });
+
+  it("should fail to log in when provided just the email", (done) => {
+    chai
+      .request(server)
+      .post("/api/user/login")
+      .send({
+        email: userData.email,
+      })
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(400);
+        done();
+      });
+  });
+
+  it("should fail to log in when provided incorrect information", (done) => {
+    chai
+      .request(server)
+      .post("/api/user/login")
+      .send({
+        email: userData.email,
+        password: "incorrect password",
+      })
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(401);
+        res.body.should.have.property("message").and.to.be.a("string");
+        res.body.message.should.be.equal("Invalid Credentials");
+        done();
+      });
+  });
+
+  it("should successfully log in when provided correct information", (done) => {
+    chai
+      .request(server)
+      .post("/api/user/login")
+      .send({
+        email: userData.email,
+        password: userData.password,
+      })
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(200);
+        res.body.should.have.property("token").and.to.be.a("string");
+        done();
       });
   });
 });
