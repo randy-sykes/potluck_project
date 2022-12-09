@@ -1,5 +1,6 @@
 const { RecipeModel } = require("../models/recipe");
 const { UserModel } = require("../models/user");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 // Recipe Functions
 const getAllRecipesInDB = async () => {
@@ -33,10 +34,16 @@ const userExistsInDB = async (user) => {
   return await UserModel.exists({ email: user.email });
 };
 
+const userIdExistsInDB = async (userId) => {
+  if (!ObjectId.isValid(userId)) return false;
+  return await UserModel.findOne({ _id: userId });
+};
+
 module.exports = {
   getAllRecipesInDB,
   createNewRecipeInDB,
   doesRecipeExistInDB,
   createUserInDB,
   userExistsInDB,
+  userIdExistsInDB,
 };
