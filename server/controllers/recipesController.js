@@ -41,7 +41,7 @@ const createNewRecipe = async (req, res) => {
       .json({ error: "MissingFields", missingFields: missingFields });
     return;
   }
-  const validUser = await dataController.userIdExistsInDB(recipe.author);
+  const validUser = await dataController.userExistsInDB("_id", recipe.author);
   if (!validUser) {
     res.status(401).json({
       error: "InvalidAuthor",
