@@ -147,26 +147,25 @@ components:
   examples: # Referenced by "#/components/examples/<entryName>"
     ReturnRecipeExample: # Referenced by "#/components/examples/ReturnRecipeExample"
       example:
-        -
-          "_id": "638f5a2ab664e686d05211ac"
-          "recipe_name": "Best Recipe"
-          "description": "Good Food"
-          "ingredients":
-            -
-              "ingredient_name": "Olive Oil"
-              "measurement": "tablespoon"
-              "amount": "1"
-              "_id": "638f5a2ab664e686d05211ad"
-          "directions": "Cook it"
-          "servings": 8
-          "prep_time": 5
-          "cook_time": 20
-          "author": "638cf0342ff1e8964f2952e4"
-          "source": "potluck"
-          "tags": []
-          "created_date": "2022-12-06T15:05:14.617Z"
-          "comments": []
-          "__v": 0
+        "_id": "638f5a2ab664e686d05211ac"
+        "recipe_name": "Best Recipe"
+        "description": "Good Food"
+        "ingredients":
+          -
+            "ingredient_name": "Olive Oil"
+            "measurement": "tablespoon"
+            "amount": "1"
+            "_id": "638f5a2ab664e686d05211ad"
+        "directions": "Cook it"
+        "servings": 8
+        "prep_time": 5
+        "cook_time": 20
+        "author": "638cf0342ff1e8964f2952e4"
+        "source": "potluck"
+        "tags": []
+        "created_date": "2022-12-06T15:05:14.617Z"
+        "comments": []
+        "__v": 0
   # Reusable links
   links: # Referenced by "#/components/links/<entryName>"
   # Reusable callbacks

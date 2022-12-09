@@ -110,7 +110,7 @@ describe("Testing the different routes and methods for /user", () => {
         done();
       });
   });
-  runs.forEach(function (run) {
+  runs.forEach((run) => {
     it(`POST /api/user/register should ${run.it}`, (done) => {
       chai
         .request(server)

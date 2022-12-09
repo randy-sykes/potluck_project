@@ -11,24 +11,56 @@ const getAllRecipes = async (req, res) => {
 };
 
 const createNewRecipe = async (req, res) => {
-  const { recipe_name } = req.body?.recipe || "No Recipe provided";
-  if (recipe_name == "No Recipe provided") {
-    res.status(401).json({ error: "Please provide a validate recipe." });
-  } else {
-    const recipe = req.body.recipe;
-    const recipeExists = await dataController.doesRecipeExistInDB(recipe_name);
-    if (recipeExists) {
-      res.status(409).json({ error: "Recipe already exists with that name." });
-    } else {
-      const newRecipe = await dataController.createNewRecipeInDB(recipe);
-      if (newRecipe?.error) {
-        res
-          .status(406)
-          .json({ name: newRecipe.error, message: newRecipe.message });
-      } else {
-        res.status(201).json(newRecipe);
+  if (req.body.recipe === undefined) {
+    res.status(400).json({ error: "Please provide a recipe object." });
+    return;
+  }
+  const recipe = req.body.recipe;
+  const recipeKeys = [
+    "recipe_name",
+    "description",
+    "directions",
+    "servings",
+    "prep_time",
+    "cook_time",
+    "author",
+    "source",
+  ];
+  const ingredientKeys = ["amount", "ingredient_name"];
+  const missingFields = recipeKeys.filter((key) => !recipe.hasOwnProperty(key));
+  ingredientKeys.forEach((key) => {
+    recipe.ingredients.forEach((ingredient) => {
+      if (!ingredient.hasOwnProperty(key)) {
+        missingFields.push(key);
       }
-    }
+    });
+  });
+  if (missingFields.length > 0) {
+    res
+      .status(406)
+      .json({ error: "MissingFields", missingFields: missingFields });
+    return;
+  }
+  const validUser = await dataController.userIdExistsInDB(recipe.author);
+  if (!validUser) {
+    res.status(401).json({
+      error: "InvalidAuthor",
+      message: "Provided author is not registered",
+    });
+    return;
+  }
+  const recipeExists = await dataController.doesRecipeExistInDB(
+    recipe.recipe_name
+  );
+  if (recipeExists) {
+    res.status(409).json({ error: "Recipe already exists with that name." });
+    return;
+  }
+  const newRecipe = await dataController.createNewRecipeInDB(recipe);
+  if (newRecipe?.error) {
+    res.status(406).json({ name: newRecipe.error, message: newRecipe.message });
+  } else {
+    res.status(201).json(newRecipe);
   }
 };
 
