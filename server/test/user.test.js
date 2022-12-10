@@ -9,52 +9,34 @@ chai.use(chaiHttp);
 describe("The different tests for /user/register", () => {
   const userTestObjs = {
     successful: {
-      first_name: "Test",
-      last_name: "Successful",
+      full_name: "Test",
       email: "test@example.com",
       password: "Testing123",
     },
-    missingFirstName: {
-      last_name: "Failure",
-      email: "test@example.com",
-      password: "Testing123",
-    },
-    missingLastName: {
-      first_name: "Test",
+    missingName: {
       email: "test@example.com",
       password: "Testing123",
     },
     missingEmail: {
-      first_name: "Test",
-      last_name: "Successful",
+      full_name: "Test",
       password: "Testing123",
     },
     missingPassword: {
-      first_name: "Test",
-      last_name: "Successful",
+      full_name: "Test",
       email: "test@example.com",
     },
     missingEmailAndPassword: {
-      first_name: "Test",
-      last_name: "Successful",
+      full_name: "Test",
     },
   };
 
   let runs = [
     {
-      it: "fail when provided data missing the first_name.",
+      it: "fail when provided data missing the full_name.",
       opt: {
         status: 422,
-        postData: userTestObjs.missingFirstName,
-        response: { error: "MissingFields", missingFields: ["first_name"] },
-      },
-    },
-    {
-      it: "fail when provided data missing the last_name.",
-      opt: {
-        status: 422,
-        postData: userTestObjs.missingLastName,
-        response: { error: "MissingFields", missingFields: ["last_name"] },
+        postData: userTestObjs.missingName,
+        response: { error: "MissingFields", missingFields: ["full_name"] },
       },
     },
     {
@@ -155,8 +137,7 @@ describe("The different tests for /user/register", () => {
 describe("LOGIN - The different tests for /user/login", () => {
   var userId;
   const userData = {
-    first_name: "Test",
-    last_name: "Successful",
+    full_name: "Test",
     email: "test@example.com",
     password: "Testing123",
   };

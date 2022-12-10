@@ -32,7 +32,7 @@ const loginUser = async (req, res) => {
 
 const createUser = async (req, res) => {
   // Required keys for user obj
-  const keys = ["first_name", "last_name", "email", "password"];
+  const keys = ["full_name", "email", "password"];
   // Checks the req.body object to ensure it has everything required for user creation, returns missing fields if it doesn't
   const missingFields = keys.filter((key) => !req.body.hasOwnProperty(key));
   if (Object.keys(req.body).length === 0) {
@@ -46,8 +46,7 @@ const createUser = async (req, res) => {
   // Create user object
   const user = {
     email: req.body.email,
-    first_name: req.body.first_name,
-    last_name: req.body.last_name,
+    full_name: req.body.full_name,
     password: req.body.password,
   };
   // Checks if a user exists before it attempts to create it, returns response if they do

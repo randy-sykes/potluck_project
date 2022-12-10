@@ -11,13 +11,9 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  first_name: {
+  full_name: {
     type: String,
     required: true,
-  },
-  last_name: {
-    type: String,
-    default: "",
   },
   joined: {
     type: Date,
