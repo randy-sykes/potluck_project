@@ -69,6 +69,10 @@ const recipeSchema = new Schema({
     default: Date.now,
   },
   comments: [commentSchema],
+  image_source: {
+    type: String,
+    default: "",
+  },
 });
 
 exports.RecipeModel = new mongoose.model("recipes", recipeSchema);

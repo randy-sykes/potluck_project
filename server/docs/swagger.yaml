@@ -55,6 +55,10 @@ components:
           type: string
           description: Value is always potluck from the database
           example: potluck
+        image_source:
+          type: string
+          description: This will be either a URL or cloudinary id for the image
+          example: asdf89asg0ietunasdfoguh9h
         ingredients:
           type: array
           description: 'Array of Ingredient objects'
