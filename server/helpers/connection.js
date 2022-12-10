@@ -9,6 +9,8 @@ const connectionObject = {
   useUnifiedTopology: true,
 };
 
+mongoose.set("strictQuery", true);
+
 mongoose
   .connect(endpoint, connectionObject)
   .then(() => {
