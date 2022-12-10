@@ -28,56 +28,120 @@ app.get("/recipes", (req, res) => {
   request.get(endpoint, (error, response, body) => {
     if (!error && response.statusCode === 200) {
       const recipes = JSON.parse(body);
-      res.render("allRecipes.ejs", { recipes });
-    } else {
-      res.render("error.ejs");
+      return res.render("allRecipes.ejs", { recipes });
     }
+    res.render("error.ejs");
   });
 });
 
-app.post("/recipes", (req, res) => {});
+app.post("/recipes", (req, res) => {
+  res.send("/recipes POST Not setup yet");
+});
 
 // Specific recipe routes
-app.get("/recipes/:recipe_id", (req, res) => {});
+app.get("/recipes/:recipe_id", (req, res) => {
+  res.send("/recipes/:recipe_id GET Not setup yet");
+});
 
-app.put("/recipes/:recipe_id", (req, res) => {});
+app.put("/recipes/:recipe_id", (req, res) => {
+  res.send("/recipes/:recipe_id PUT Not setup yet");
+});
 
-app.delete("/recipes/:recipe_id", (req, res) => {});
+app.delete("/recipes/:recipe_id", (req, res) => {
+  res.send("/recipes/:recipe_id DELETE Not setup yet");
+});
 
 // Comment routes for specific recipes
-app.post("/recipes/:recipe_id/comments", (req, res) => {});
+app.post("/recipes/:recipe_id/comments", (req, res) => {
+  res.send("/recipes/:recipe_id/comments POST Not setup yet");
+});
 
-app.put("/recipes/:recipe_id/comments", (req, res) => {});
+app.put("/recipes/:recipe_id/comments", (req, res) => {
+  res.send("/recipes/:recipe_id/comments PUT Not setup yet");
+});
 
-app.delete("/recipes/:recipe_id/comments", (req, res) => {});
+app.delete("/recipes/:recipe_id/comments", (req, res) => {
+  res.send("/recipes/:recipe_id/comments DELETE Not setup yet");
+});
 
 /*
 
 LOGIN SECTION
 
 */
-app.post("/login", (req, res) => {});
+app.post("/login", (req, res) => {
+  res.send("/login Not setup yet");
+});
+
+/*
+
+REGISTER SECTION
+
+*/
+app.post("/register", (req, res) => {
+  const { email, full_name, password, confirm_password } = req.body;
+  if (!(email && full_name && password && confirm_password)) {
+    return res.send("Fill in form");
+  }
+  if (!(password === confirm_password)) {
+    return res.send("Please check the password it doesn't match");
+  }
+  request.post(
+    {
+      headers: { "content-type": "application/json" },
+      url: `${API_URI}/user/register`,
+      body: JSON.stringify({
+        email: email.toLowerCase(),
+        password,
+        first_name: full_name,
+        last_name: "test",
+      }),
+    },
+    function (err, response, body) {
+      const status = response.statusCode;
+      console.log(body);
+      if (status === 201) {
+        return res.send("Created user, please login");
+      }
+      if (status === 400) {
+        return res.send("Please fill out the form");
+      }
+      if (status === 409) {
+        return res.send("Email already exists, just login.");
+      }
+      if (status === 422) {
+        return res.send(`Missing information ${body}`);
+      }
+    }
+  );
+});
 
 /*
 
 ACCOUNT SECTION
 
 */
-// Account route to create an account
-app.post("/account/", (req, res) => {});
 
 // Specific user account routes
-app.get("/account/:username", (req, res) => {});
+app.get("/account/:username", (req, res) => {
+  res.send("/account/:username GET not setup yet.");
+});
 
-app.put("/account/:username", (req, res) => {});
+app.put("/account/:username", (req, res) => {
+  res.send("/account/:username PUT not setup yet.");
+});
 
-app.delete("/account/:username", (req, res) => {});
+app.delete("/account/:username", (req, res) => {
+  res.send("/account/:username DELETE not setup yet.");
+});
 
 /*
 
 WILDCARD ROUTE STAYS AT BOTTOM
 
 */
-app.get("*", (req, res) => {});
+app.get("*", (req, res) => {
+  res.send("Why are you here?");
+});
 
 app.listen(PORT, () => console.log(`Gather 'n Grub using port ${PORT}`));
