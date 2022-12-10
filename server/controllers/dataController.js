@@ -29,14 +29,16 @@ const createUserInDB = async (user) => {
     return data;
   }
 };
-
-const userExistsInDB = async (user) => {
-  return await UserModel.exists({ email: user.email });
+// Function takes in the key to search for i.e. "_id" and the value it should have
+const userExistsInDB = async (key, value) => {
+  if (key === "_id" && !ObjectId.isValid(value)) return false;
+  return await UserModel.exists({ [key]: value });
 };
 
-const userIdExistsInDB = async (userId) => {
-  if (!ObjectId.isValid(userId)) return false;
-  return await UserModel.findOne({ _id: userId });
+const getUserFromDB = async (key, value) => {
+  return await UserModel.findOne({ [key]: value })
+    .lean()
+    .exec();
 };
 
 module.exports = {
@@ -45,5 +47,5 @@ module.exports = {
   doesRecipeExistInDB,
   createUserInDB,
   userExistsInDB,
-  userIdExistsInDB,
+  getUserFromDB,
 };
