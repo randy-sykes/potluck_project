@@ -93,8 +93,7 @@ app.post("/register", (req, res) => {
       body: JSON.stringify({
         email: email.toLowerCase(),
         password,
-        first_name: full_name,
-        last_name: "test",
+        full_name,
       }),
     },
     function (err, response, body) {
