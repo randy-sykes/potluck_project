@@ -17,9 +17,7 @@ components:
     User: # Referenced by "#/components/schemas/User"
       type: object
       properties:
-        first_name:
-          type: string
-        last_name:
+        full_name:
           type: string
         email:
           type: string
@@ -101,12 +99,9 @@ components:
     User:
       type: object
       properties:
-        first_name:
+        full_name:
           type: string
-          example: First_name
-        last_name:
-          type: string
-          example: Last_name
+          example: full_name
         email:
           type: string
           example: first_last@example.com
@@ -298,7 +293,7 @@ paths:
                     example: MissingFields
                   missingFields:
                     type: array
-                    example: ["first_name", "last_name"]
+                    example: ["full_name"]
 
   /user/login:
     post:
@@ -338,10 +333,7 @@ paths:
                     type: string
                     description: Encrypted string
                     example: $2a$10$OQGEcarHGLdtw8X5iseLPui7LJkNNYZYGQGsfPx6BXN5bk/wTV3.C
-                  first_name:
-                    type: string
-                    example: Test
-                  last_name:
+                  full_name:
                     type: string
                     example: Test
                   joined:
