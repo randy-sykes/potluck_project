@@ -9,15 +9,13 @@ chai.use(chaiHttp);
 
 describe("recipe route tests", function () {
   let user = new UserModel({
-    first_name: "Testing",
-    last_name: "gintesT",
+    full_name: "Testing",
     password: "Testing",
     email: "test@example.com",
   })._id.toString();
 
   const userTestObj = {
-    first_name: "Test",
-    last_name: "Successful",
+    full_name: "Test",
     email: "test@example.com",
     password: "Testing123",
   };
