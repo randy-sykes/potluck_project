@@ -136,6 +136,7 @@ describe("The different tests for /user/register", () => {
 
 describe("LOGIN - The different tests for /user/login", () => {
   var userId;
+  var loginData;
   const userData = {
     full_name: "Test",
     email: "test@example.com",
@@ -222,7 +223,8 @@ describe("LOGIN - The different tests for /user/login", () => {
       .end((err, res) => {
         if (err) throw err;
         res.should.have.status(200);
-        res.body.should.have.property("token").and.to.be.a("string");
+        res.header.should.have.property("auth-token").and.to.be.a("string");
+        res.body.should.have.property("authenticated").and.to.be.equal(true);
         done();
       });
   });

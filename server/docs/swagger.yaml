@@ -318,6 +318,11 @@ paths:
       responses:
         "200":
           description: Successfully logged in requested user.
+          headers:
+            auth-token:
+              schema:
+                type: string
+              description: JWT used for authentication.
           content:
             application/json:
               schema:
@@ -326,26 +331,12 @@ paths:
                   _id:
                     type: string
                     example: 638d2f39fea819d7bcb80937
-                  email:
-                    type: string
-                    example: test@example.com
-                  password:
-                    type: string
-                    description: Encrypted string
-                    example: $2a$10$OQGEcarHGLdtw8X5iseLPui7LJkNNYZYGQGsfPx6BXN5bk/wTV3.C
                   full_name:
                     type: string
-                    example: Test
-                  joined:
-                    type: string
-                    example: 2022-12-07T21:44:50.148Z
-                  __v:
-                    type: integer
-                    example: 0
-                  token:
-                    type: string
-                    description: JSON Web Token
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjM5M2EwOTkwNTA4MjBlNGYyZGQ4MzczIiwiZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNjcwNjE5Mjg5LCJleHAiOjE2NzA2MjY0ODl9.JMlmcLncAhRDfVHkHQUSBIGfBerqelG-KrYyASh6q9I
+                    example: test
+                  authenticated:
+                    type: boolean
+                    example: true
         "400":
           description: Failure due to empty request.
           content:
