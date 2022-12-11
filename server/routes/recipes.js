@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const recipesController = require("../controllers/recipesController");
 const commentsController = require("../controllers/commentsController");
-const auth = require("./auth");
+const auth = require("../middleware/auth");
 
 // Recipe routes
 router.get("/", recipesController.getAllRecipes);
