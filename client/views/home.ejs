@@ -1,13 +1,25 @@
-<%- include('partials/header') %>
-<%- include('partials/modal') %>
+<%- include('partials/header', { title: locals.title ? title : "Gather 'n Grub", user: locals.user ? user : {authenticated: false} }) %>
+<%- include('partials/modal', { user: locals.user ? user : {authenticated: false} }) %>
 
 
 
 <div id="background1">
     <div id="message">
       <h1>Gather & Grub</h1>
-      <a href="#" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#SignInForm">Login</a>
-      <a href="#" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#SignUpForm">Register</a>
+      <% if(typeof errors !== 'undefined') { %>
+        <ul>
+        <% errors.forEach(error => { %>
+          <li><%= error.message %></li>
+        <% }) %>
+      </ul>
+      <% } %>
+      <% if (user.authenticated) { %>
+        <a class="btn btn-lg btn-success" href="/create-recipe">Create Recipe</a>
+        <a class="btn btn-lg btn-warning" href="/logout">Logout</a>
+      <% } else { %>
+        <a href="#" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#SignInForm">Login</a>
+        <a href="#" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#SignUpForm">Register</a>
+      <% } %>
   </div>
   </div>
 

@@ -1,5 +1,5 @@
-const { RecipeModel } = require("../models/recipe");
 const dataController = require("./dataController");
+const { jwtValidation } = require("../helpers/validations");
 
 const getAllRecipes = async (req, res) => {
   const result = await dataController.getAllRecipesInDB();
@@ -23,8 +23,6 @@ const createNewRecipe = async (req, res) => {
     "servings",
     "prep_time",
     "cook_time",
-    "author",
-    "source",
   ];
   const ingredientKeys = ["amount", "ingredient_name"];
   const missingFields = recipeKeys.filter((key) => !recipe.hasOwnProperty(key));
@@ -41,7 +39,11 @@ const createNewRecipe = async (req, res) => {
       .json({ error: "MissingFields", missingFields: missingFields });
     return;
   }
-  const validUser = await dataController.userExistsInDB("_id", recipe.author);
+  const userTokenInfo = jwtValidation(req.header("auth-token"));
+  const validUser = await dataController.userExistsInDB(
+    "_id",
+    userTokenInfo._id
+  );
   if (!validUser) {
     res.status(401).json({
       error: "InvalidAuthor",
@@ -56,6 +58,7 @@ const createNewRecipe = async (req, res) => {
     res.status(409).json({ error: "Recipe already exists with that name." });
     return;
   }
+  recipe.author = userTokenInfo._id;
   const newRecipe = await dataController.createNewRecipeInDB(recipe);
   if (newRecipe?.error) {
     res.status(406).json({ name: newRecipe.error, message: newRecipe.message });

@@ -1,0 +1,103 @@
+<%- include('partials/header', { title: locals.title ? title : "Gather 'n Grub - Create Recipe", user: locals.user ? user : {authenticated: false}, page: "create-recipe" }) %>
+<%- include('partials/modal', { user: locals.user ? user : {authenticated: false} }) %>
+
+<div class="row justify-content-center">
+  <div class="col-8">
+    <form action="/create-recipe" method="POST">
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="prep_time" class="form-label">Recipe Name:</label>
+          <input type="text" name="recipe_name" id="recipe_name" placeholder="Enter Recipe Name" value="<%= locals.recipe ? recipe.recipe_name : '' %>" required>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="description" class="form-label">Description:</label>
+          <textarea type="text" name="description" id="description" placeholder="Enter Description" required><%= locals.recipe ? recipe.description : '' %></textarea>
+        </div>
+      </div>
+
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="directions" class="form-label">Directions:</label>
+          <textarea type="text" name="directions" id="directions" placeholder="Enter Directions"><%= locals.recipe ? recipe.directions : '' %></textarea>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="servings" class="form-label">Servings:</label>
+          <input type="text" name="servings" id="servings" placeholder="Enter Servings Size" value="<%= locals.recipe ? recipe.servings : '' %>" required>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="prep_time" class="form-label">Prep Time:</label>
+          <input type="text" name="prep_time" id="prep_time" placeholder="Enter Prep Time" value="<%= locals.recipe ? recipe.prep_time : '' %>" required>
+        </div>
+      </div>
+
+
+
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="cook_time" class="form-label">Cook Time:</label>
+          <input type="text" name="cook_time" id="cook_time" placeholder="Enter Cook Time" value="<%= locals.recipe ? recipe.cook_time : '' %>" required>
+        </div>
+      </div>
+
+
+      <div class="col-12">
+        <h5>Ingredients</h5>
+        <table id="ingredientsList" class="col-10">
+          <tr>
+            <th class="col-3">Ingredient Name</th>
+            <th class="col-3">Amount</th>
+            <th class="col-3">Measurement (tablespoon etc)</th>
+            <th class="col-1"></th>
+          </tr>
+          <tr>
+            <td class="col-3"><input type="text" name="ingredient_names" value="<%= locals.recipe ? recipe.ingredient_names[0] : '' %>" required></td>
+            <td class="col-3"><input type="text" name="amounts" value="<%= locals.recipe ? recipe.amounts[0] : '' %>" required></td>
+            <td class="col-3"><input type="text" name="measurements" value="<%= locals.recipe ? recipe.measurements[0] : '' %>"></td>
+            <td class="col-1"><button type="button" value="Delete" onclick="deleteRow(this)">Delete</button></td>
+          </tr>
+        </table>
+        <div class="col-12">
+          <button type="button" class="btn btn-outline-primary" id="addIngredientsBtn">+ Ingredient</button>
+        </div>
+      </div>
+
+
+
+      <div class="row g-3">
+        <div class="col-12">
+          IMAGE
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label>Tags (comma separated):
+            <textarea type="text" name="tag_string" id="tag_string" placeholder="Enter Tags (comma separated)"><%= locals.recipe ? recipe.measurements[0] : '' %></textarea>
+          </label>
+        </div>
+      </div>
+
+
+
+
+
+      <div class="col-12">
+        <button type="submit">Submit Recipe</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<%- include('partials/footer')  %>

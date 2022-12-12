@@ -8,17 +8,31 @@ const server = require("../server");
 chai.use(chaiHttp);
 
 describe("recipe route tests", function () {
-  let user = new UserModel({
-    full_name: "Testing",
-    password: "Testing",
-    email: "test@example.com",
-  })._id.toString();
-
+  var apiToken;
   const userTestObj = {
     full_name: "Test",
     email: "test@example.com",
     password: "Testing123",
   };
+
+  beforeEach((done) => {
+    chai
+      .request(server)
+      .post("/api/user/register")
+      .send(userTestObj)
+      .end((err, res) => {
+        if (err) throw err;
+        chai
+          .request(server)
+          .post("/api/user/login")
+          .send({ email: userTestObj.email, password: userTestObj.password })
+          .end((err, res) => {
+            if (err) throw err;
+            apiToken = res.header["auth-token"];
+            done();
+          });
+      });
+  });
 
   const recipeTestObj = {
     recipeMissingName: {
@@ -28,8 +42,6 @@ describe("recipe route tests", function () {
         servings: 10,
         prep_time: 10,
         cook_time: 10,
-        author: user,
-        source: "potluck",
         ingredients: [
           {
             ingredient_name: "Test1 ingredient",
@@ -47,8 +59,6 @@ describe("recipe route tests", function () {
         servings: 10,
         prep_time: 10,
         cook_time: 10,
-        author: user,
-        source: "potluck",
       },
     },
     recipeMissingDescription: {
@@ -58,8 +68,6 @@ describe("recipe route tests", function () {
         servings: 10,
         prep_time: 10,
         cook_time: 10,
-        author: user,
-        source: "potluck",
         ingredients: [
           {
             ingredient_name: "Test1 ingredient",
@@ -76,8 +84,6 @@ describe("recipe route tests", function () {
         servings: 10,
         prep_time: 10,
         cook_time: 10,
-        author: user,
-        source: "potluck",
         ingredients: [
           {
             ingredient_name: "Test1 ingredient",
@@ -94,8 +100,6 @@ describe("recipe route tests", function () {
         directions: "Test1 directions",
         prep_time: 10,
         cook_time: 10,
-        author: user,
-        source: "potluck",
         ingredients: [
           {
             ingredient_name: "Test1 ingredient",
@@ -112,8 +116,6 @@ describe("recipe route tests", function () {
         directions: "Test1 directions",
         servings: 10,
         cook_time: 10,
-        author: user,
-        source: "potluck",
         ingredients: [
           {
             ingredient_name: "Test1 ingredient",
@@ -130,8 +132,6 @@ describe("recipe route tests", function () {
         directions: "Test1 directions",
         servings: 10,
         prep_time: 10,
-        author: user,
-        source: "potluck",
         ingredients: [
           {
             ingredient_name: "Test1 ingredient",
@@ -149,7 +149,6 @@ describe("recipe route tests", function () {
         servings: 10,
         prep_time: 10,
         cook_time: 10,
-        source: "potluck",
         ingredients: [
           {
             ingredient_name: "Test1 ingredient",
@@ -167,8 +166,6 @@ describe("recipe route tests", function () {
         servings: 10,
         prep_time: 10,
         cook_time: 10,
-        author: "a1b2c3d4e5f6g7h8i9j0",
-        source: "potluck",
         ingredients: [
           {
             ingredient_name: "Test1 ingredient",
@@ -186,8 +183,6 @@ describe("recipe route tests", function () {
         servings: 10,
         prep_time: 10,
         cook_time: 10,
-        author: user,
-        source: "potluck",
         ingredients: [
           {
             measurement: "Test1 measurement",
@@ -204,8 +199,6 @@ describe("recipe route tests", function () {
         servings: 10,
         prep_time: 10,
         cook_time: 10,
-        author: user,
-        source: "potluck",
         ingredients: [
           {
             ingredient_name: "Test1 ingredient",
@@ -222,8 +215,6 @@ describe("recipe route tests", function () {
         servings: 10,
         prep_time: 10,
         cook_time: 10,
-        author: "",
-        source: "potluck",
         image_source: "",
         ingredients: [
           {
@@ -286,25 +277,6 @@ describe("recipe route tests", function () {
       },
     },
     {
-      it: "fail when provided data missing the recipe author.",
-      opt: {
-        status: 406,
-        postData: recipeTestObj.recipeMissingAuthor,
-        response: { error: "MissingFields", missingFields: ["author"] },
-      },
-    },
-    {
-      it: "fail when provided data with an invalid recipe author.",
-      opt: {
-        status: 401,
-        postData: recipeTestObj.recipeInvalidAuthor,
-        response: {
-          error: "InvalidAuthor",
-          message: "Provided author is not registered",
-        },
-      },
-    },
-    {
       it: "fail when provided data missing the recipe ingredient name.",
       opt: {
         status: 406,
@@ -334,6 +306,7 @@ describe("recipe route tests", function () {
       chai
         .request(server)
         .post("/api/recipes")
+        .set("auth-token", apiToken)
         .send(run.opt.postData)
         .end((err, res) => {
           res.should.have.status(run.opt.status);
@@ -354,48 +327,36 @@ describe("recipe route tests", function () {
   it("POST /api/recipes should create a new recipe in the database", (done) => {
     chai
       .request(server)
-      .post("/api/user/register")
-      .send(userTestObj)
+      .post("/api/recipes")
+      .set("auth-token", apiToken)
+      .send(recipeTestObj.newRecipeSuccess)
       .end((err, res) => {
-        recipeTestObj.newRecipeSuccess.recipe.author = res.body.userId;
-        chai
-          .request(server)
-          .post("/api/recipes")
-          .send(recipeTestObj.newRecipeSuccess)
-          .end((err, res) => {
-            res.should.have.status(201);
-            expect(res.body.recipe_name).to.equal(
-              recipeTestObj.newRecipeSuccess.recipe.recipe_name
-            );
-            done();
-          });
+        res.should.have.status(201);
+        expect(res.body.recipe_name).to.equal(
+          recipeTestObj.newRecipeSuccess.recipe.recipe_name
+        );
+        done();
       });
   });
 
   it("GET /api/recipes should now return an array with 1 entry from the database", (done) => {
     chai
       .request(server)
-      .post("/api/user/register")
-      .send(userTestObj)
+      .post("/api/recipes")
+      .set("auth-token", apiToken)
+      .send(recipeTestObj.newRecipeSuccess)
       .end((err, res) => {
-        recipeTestObj.newRecipeSuccess.recipe.author = res.body.userId;
         chai
           .request(server)
-          .post("/api/recipes")
-          .send(recipeTestObj.newRecipeSuccess)
+          .get("/api/recipes")
           .end((err, res) => {
-            chai
-              .request(server)
-              .get("/api/recipes")
-              .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.be.a("array");
-                res.body.length.should.be.equal(1);
-                expect(res.body[0].recipe_name).to.equal(
-                  recipeTestObj.newRecipeSuccess.recipe.recipe_name
-                );
-                done();
-              });
+            res.should.have.status(200);
+            res.body.should.be.a("array");
+            res.body.length.should.be.equal(1);
+            expect(res.body[0].recipe_name).to.equal(
+              recipeTestObj.newRecipeSuccess.recipe.recipe_name
+            );
+            done();
           });
       });
   });

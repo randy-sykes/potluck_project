@@ -6,27 +6,39 @@ const dataController = require("./dataController");
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (!(email && password)) {
       return res.status(400).json({ message: "Provide email and password." });
     }
+    // Check if User exists
     const user = await dataController.getUserFromDB("email", email);
-    // Check if user exists and the password matches
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (!user)
+      return res
+        .status(401)
+        .json({ message: "No user found, please register." });
+    // Check if the password matches
+    console.log(`Here is the ${password}`);
+    const authUser = await bcrypt.compare(password, user.password);
+
+    if (authUser) {
       // Create Token
       const token = jwt.sign(
-        { user_id: user._id, email },
-        process.env.TOKEN_KEY,
-        { expiresIn: "2h" }
+        { _id: user._id, email: email },
+        process.env.TOKEN_KEY
       );
-      // Save the token to the user object
-      user.token = token;
       // Return the user with the token
-      return res.status(200).json({ ...user });
+      res.user = {
+        _id: user._id,
+        authenticated: true,
+        full_name: user.full_name,
+      };
+      // Return auth-token header and res.user back to requester
+      return res.header("auth-token", token).status(200).json(res.user);
     }
     res.status(401).json({ message: "Invalid Credentials" });
   } catch (err) {
     console.log(err);
-    res.sendStatus(500);
+    res.status(500).send(err);
   }
 };
 
