@@ -34,7 +34,6 @@ app.use(cookieParser());
 
 // Default route
 app.get("/", (req, res) => {
-  console.log(req.session);
   const user = req.session.user || { authenticated: false };
   res.render("home.ejs", {
     title: "Gather 'n Grub",
@@ -153,7 +152,7 @@ app.post("/create-recipe", auth, (req, res) => {
     });
   }
   // if ingredient_names is an array parse it to make the ingredients objects
-  if (typeof ingredient_names === "array") {
+  if (Array.isArray(ingredient_names)) {
     // Create ingredient objects and add them to the recipe ingredients array
     ingredient_names.forEach((i, index) => {
       if (ingredient_names[index] === "" && amounts[index] === "") return;
@@ -217,8 +216,6 @@ LOGIN SECTION
 
 */
 app.post("/login", (req, res) => {
-  console.log(req.body.email);
-  console.log(req.body.password);
   const { email, password } = req.body;
   // Ensure email and password have data
   if (!(email && password)) return res.send("Email and Password required");
@@ -246,7 +243,6 @@ app.post("/login", (req, res) => {
       const user = JSON.parse(body);
       session.user = user;
       session.user.token = token;
-      console.log(session);
       res.status(200).redirect("/recipes");
     }
   );
