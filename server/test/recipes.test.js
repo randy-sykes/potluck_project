@@ -215,6 +215,7 @@ describe("recipe route tests", function () {
         servings: 10,
         prep_time: 10,
         cook_time: 10,
+        image_source: "",
         ingredients: [
           {
             ingredient_name: "Test1 ingredient",
