@@ -107,7 +107,7 @@ app.get("/create-recipe", auth, (req, res) => {
 
 app.post("/create-recipe", auth, (req, res) => {
   let error = [];
-  // Get varables from the body
+  // Get variables from the body
   const {
     recipe_name,
     description,
