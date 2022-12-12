@@ -97,7 +97,7 @@ app.delete("/recipes/:recipe_id/comments", auth, (req, res) => {
 CREATE RECIPE
 
 */
-app.get("/create-recipe", (req, res) => {
+app.get("/create-recipe", auth, (req, res) => {
   res.render("create-recipe.ejs", {
     title: "Gather 'n Grub - Create Recipe",
     // user: req.session.user,
