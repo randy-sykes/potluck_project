@@ -6,14 +6,21 @@ const dataController = require("./dataController");
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (!(email && password)) {
       return res.status(400).json({ message: "Provide email and password." });
     }
+    // Check if User exists
     const user = await dataController.getUserFromDB("email", email);
-    // Check if user exists and the password matches
+    if (!user)
+      return res
+        .status(401)
+        .json({ message: "No user found, please register." });
+    // Check if the password matches
+    console.log(`Here is the ${password}`);
     const authUser = await bcrypt.compare(password, user.password);
 
-    if (user && authUser) {
+    if (authUser) {
       // Create Token
       const token = jwt.sign(
         { _id: user._id, email: email },
@@ -31,7 +38,7 @@ const loginUser = async (req, res) => {
     res.status(401).json({ message: "Invalid Credentials" });
   } catch (err) {
     console.log(err);
-    res.sendStatus(500);
+    res.status(500).send(err);
   }
 };
 
