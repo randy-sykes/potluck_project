@@ -67,10 +67,15 @@ const createNewRecipe = async (req, res) => {
   }
 };
 
-const getSpecificRecipe = (req, res) => {
-  const recipe_id = Number(req.params.recipe_id);
-  const recipe = dataController.getRecipeInDB(recipe_id);
-  res.json(recipe);
+const getSpecificRecipe = async (req, res) => {
+  const recipe_id = req.params.recipe_id;
+  const recipe = await dataController.getRecipeInDB(recipe_id);
+  if (recipe?.error || recipe === null) {
+    return res.status(404).json(recipe);
+  }
+  const author = await dataController.getUserFromDB("_id", recipe.author);
+  recipe.author_name = author.full_name;
+  res.status(200).json(recipe);
 };
 
 const updateSpecificRecipe = (req, res) => {

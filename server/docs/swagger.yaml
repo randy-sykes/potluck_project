@@ -166,6 +166,30 @@ components:
         "image_source": "asdf97g23uitbguh9sg0"
         "comments": []
         "__v": 0
+
+    SingleReturnRecipeExample: # Referenced by "#/components/examples/ReturnRecipeExample"
+      example:
+        "_id": "638f5a2ab664e686d05211ac"
+        "recipe_name": "Best Recipe"
+        "description": "Good Food"
+        "ingredients":
+          -
+            "ingredient_name": "Olive Oil"
+            "measurement": "tablespoon"
+            "amount": "1"
+            "_id": "638f5a2ab664e686d05211ad"
+        "directions": "Cook it"
+        "servings": 8
+        "prep_time": 5
+        "cook_time": 20
+        "author": "638cf0342ff1e8964f2952e4"
+        "author_name": "Test"
+        "source": "potluck"
+        "tags": []
+        "created_date": "2022-12-06T15:05:14.617Z"
+        "image_source": "asdf97g23uitbguh9sg0"
+        "comments": []
+        "__v": 0
   # Reusable links
   links: # Referenced by "#/components/links/<entryName>"
   # Reusable callbacks
@@ -234,6 +258,41 @@ paths:
                     type: string
                     description: Error message "Recipe already exists with that name."
                     example: Recipe already exists with that name.
+
+  /recipes/:recipe_id:
+    get:
+      tags:
+        - recipes
+      summary: Get a specific recipe in the database.
+      description: Retrieve a Recipe Object.
+      responses:
+        '200':
+          description: A single recipe object.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/examples/SingleReturnRecipeExample"
+        '404':
+          description: Error message for the single recipe request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                Invalid Id:
+                  value:
+                    error: InvalidId
+                    message: Provided recipe id is not a valid ID
+                Not Found:
+                  value:
+                    error: NotFound
+                    message: No recipe found with the id :recipe_id
 
   /user/register:
     post:
