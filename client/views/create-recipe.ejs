@@ -1,5 +1,5 @@
-<%- include('partials/header', { title: locals.title ? title : "Gather 'n Grub - Create Recipe", user: locals.user ? user : {authenticated: false}, page: "create-recipe" }) %>
-<%- include('partials/modal', { user: locals.user ? user : {authenticated: false} }) %>
+<%- include('partials/header', { title: locals?.title || "Gather 'n Grub - Create Recipe", user: locals?.user || {authenticated: false}, page: "create-recipe" }) %>
+<%- include('partials/modal', { user: locals?.user || {authenticated: false} }) %>
 
 <div class="row justify-content-center mb-5 mt-3">
   <div class="col-8">
@@ -18,6 +18,11 @@
         </div>
       </div>
 
+
+
+      <% if (locals?.recipe?.author_name && user?._id !== recipe.author) { %>
+        <p>Created By: <%= recipe.author_name %></p>
+      <% } %>
       <div class="row g-3">
         <div class="col-12">
           <label for="description" class="form-label">Description:</label>
