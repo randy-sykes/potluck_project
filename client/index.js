@@ -49,9 +49,8 @@ RECIPE ROUTES
 */
 app.get("/recipes", (req, res) => {
   const endpoint = `${API_URI}/recipes`;
-  console.log(req.session);
-  request.get(endpoint, (error, response, body) => {
-    if (!error && response.statusCode === 200) {
+  request.get(endpoint, (error, resp, body) => {
+    if (!error && resp.statusCode === 200) {
       const recipes = JSON.parse(body);
       return res.render("allRecipes.ejs", {
         title: "Gather 'n Grub - All Recipes",
@@ -65,13 +64,29 @@ app.get("/recipes", (req, res) => {
   });
 });
 
-app.post("/recipes", (req, res) => {
-  res.send("/recipes POST Not setup yet");
-});
-
 // Specific recipe routes
 app.get("/recipes/:recipe_id", (req, res) => {
-  res.send("/recipes/:recipe_id GET Not setup yet");
+  const recipe_id = req.params.recipe_id;
+  const endpoint = `${API_URI}/recipes/${recipe_id}`;
+  let readonly = true;
+  let user = req.session?.user;
+  request.get(endpoint, (err, resp, body) => {
+    if (!err && resp.statusCode === 200) {
+      const recipe = JSON.parse(body);
+      const loggedIn = user?.authenticated;
+      if (loggedIn && req.session.user._id === recipe.author) {
+        readonly = false;
+        user = req.session.user;
+      }
+      return res.render("create-recipe.ejs", {
+        title: `Gather 'n Grub - ${recipe.recipe_name}`,
+        recipe,
+        readonly,
+        user,
+      });
+    }
+    res.send(endpoint);
+  });
 });
 
 app.delete("/recipes/:recipe_id", auth, (req, res) => {
@@ -100,7 +115,7 @@ app.get("/create-recipe", auth, (req, res) => {
   res.render("create-recipe.ejs", {
     title: "Gather 'n Grub - Create Recipe",
     // user: req.session.user,
-    user: { authenticated: true },
+    user: req.session.user,
   });
 });
 
@@ -177,9 +192,6 @@ app.post("/create-recipe", auth, (req, res) => {
   // If there are errors return back to the page
   if (error.length > 0) {
     recipe.tag_string = tag_string;
-    recipe.ingredient_names = ingredient_names;
-    recipe.measurements = measurements;
-    recipe.amounts = amounts;
     return res.render("create-recipe.ejs", {
       title: "Gather 'n Grub - Create Recipe",
       recipe,
@@ -197,7 +209,7 @@ app.post("/create-recipe", auth, (req, res) => {
       url: `${API_URI}/recipes`,
       body: JSON.stringify({ recipe: recipe }),
     },
-    (err, response, body) => {
+    (err, resp, body) => {
       if (err) res.render("error.ejs", { title: "Error", error: err });
 
       body = JSON.parse(body);
@@ -230,20 +242,16 @@ app.post("/login", (req, res) => {
         password: password,
       }),
     },
-    (err, response, body) => {
+    (err, resp, body) => {
       const session = req.session;
-      if (err || response.statusCode !== 200) {
-        return res.render("home.ejs", {
-          title: "Gather 'n Grub",
-          errors: [JSON.parse(response.body)],
-          user: {},
-        });
+      if (err || resp.statusCode !== 200) {
+        return res.status(401).redirect(req.headers.referer);
       }
-      const token = response.headers["auth-token"];
+      const token = resp.headers["auth-token"];
       const user = JSON.parse(body);
       session.user = user;
       session.user.token = token;
-      res.status(200).redirect("/recipes");
+      res.status(200).redirect(req.headers.referer);
     }
   );
 });
@@ -290,9 +298,8 @@ app.post("/register", (req, res) => {
         full_name,
       }),
     },
-    function (err, response, body) {
-      const status = response.statusCode;
-      console.log(body);
+    function (err, resp, body) {
+      const status = resp.statusCode;
       if (status === 201) {
         return res.send("Created user, please login");
       }
