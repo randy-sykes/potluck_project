@@ -265,7 +265,7 @@ app.get("/logout", (req, res) => {
   // Delete old session
   req.session.destroy();
   // redirect back to home page
-  res.redirect("/");
+  res.redirect(req.headers.referer);
 });
 
 /*
