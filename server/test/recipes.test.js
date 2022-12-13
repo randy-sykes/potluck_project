@@ -8,7 +8,8 @@ const server = require("../server");
 chai.use(chaiHttp);
 
 describe("recipe route tests", function () {
-  var apiToken;
+  var apiToken; // Used for the API calls.
+  var recipe_id; // Used for the get specific tests
   const userTestObj = {
     full_name: "Test",
     email: "test@example.com",
@@ -358,6 +359,59 @@ describe("recipe route tests", function () {
             );
             done();
           });
+      });
+  });
+
+  it("GET /api/recipes/:recipe_id should return a recipe object with author_name", (done) => {
+    chai
+      .request(server)
+      .post("/api/recipes")
+      .set("auth-token", apiToken)
+      .send(recipeTestObj.newRecipeSuccess)
+      .end((err, res) => {
+        res.should.have.status(201);
+        expect(res.body.recipe_name).to.equal(
+          recipeTestObj.newRecipeSuccess.recipe.recipe_name
+        );
+        let recipe_id = res.body._id;
+        chai
+          .request(server)
+          .get(`/api/recipes/${recipe_id}`)
+          .end((err, response) => {
+            response.should.have.status(200);
+            expect(response.body.author_name).to.equal(userTestObj.full_name);
+            done();
+          });
+      });
+  });
+
+  it("GET /api/recipes/:recipe_id should return an error if an invalid recipe id provided", (done) => {
+    const invalid_id = "asdf1234qsdfasdf12345";
+    chai
+      .request(server)
+      .get(`/api/recipes/${invalid_id}`)
+      .end((err, res) => {
+        res.should.have.status(404);
+        res.body.should.be.deep.equal({
+          error: "InvalidId",
+          message: "Provided recipe id is not a valid ID",
+        });
+        done();
+      });
+  });
+
+  it("GET /api/recipes/:recipe_id should return an error if an valid id that doesn't match a recipe id provided", (done) => {
+    const incorrect = "639760978cf61611c3d09866";
+    chai
+      .request(server)
+      .get(`/api/recipes/${incorrect}`)
+      .end((err, res) => {
+        res.should.have.status(404);
+        res.body.should.be.deep.equal({
+          error: "NotFound",
+          message: `No recipe found with the id ${incorrect}`,
+        });
+        done();
       });
   });
 });

@@ -1,10 +1,10 @@
-if (document.getElementById("create-recipe")) {
+// Select the button to add ingredients
+const ingredientsBtn = document.querySelector("#addIngredientsBtn");
+if (document.getElementById("create-recipe") && ingredientsBtn) {
   // Select the table that we are adding to
   const table = document.querySelector("table");
   // Select the first ingredient table row with inputs
   const ingredientRow = document.querySelectorAll("tr")[1];
-  // Select the button to add ingredients
-  const ingredientsBtn = document.querySelector("#addIngredientsBtn");
 
   ingredientsBtn.addEventListener("click", () => {
     let newIngredient = ingredientRow.cloneNode(true);

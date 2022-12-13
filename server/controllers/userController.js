@@ -17,7 +17,6 @@ const loginUser = async (req, res) => {
         .status(401)
         .json({ message: "No user found, please register." });
     // Check if the password matches
-    console.log(`Here is the ${password}`);
     const authUser = await bcrypt.compare(password, user.password);
 
     if (authUser) {

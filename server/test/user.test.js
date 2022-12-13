@@ -92,6 +92,7 @@ describe("The different tests for /user/register", () => {
         done();
       });
   });
+
   runs.forEach((run) => {
     it(`POST /api/user/register should ${run.it}`, (done) => {
       chai
@@ -163,8 +164,8 @@ describe("LOGIN - The different tests for /user/login", () => {
       .end((err, res) => {
         if (err) throw err;
         res.should.have.status(400);
+        done();
       });
-    done();
   });
 
   it("should fail to log in when provided just the password", (done) => {
