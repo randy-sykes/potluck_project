@@ -83,14 +83,34 @@ app.get("/recipes/:recipe_id", (req, res) => {
         recipe,
         readonly,
         user,
+        path: `/recipes/${recipe_id}`,
       });
     }
-    res.send(endpoint);
   });
 });
 
-app.delete("/recipes/:recipe_id", auth, (req, res) => {
-  res.send("/recipes/:recipe_id DELETE Not setup yet");
+app.post("/recipes/:recipe_id", (req, res) => {
+  const recipe_id = req.params.recipe_id;
+  const endpoint = `${API_URI}/recipes/${recipe_id}`;
+  // DELETE Recipe from post
+  if (req.body.send === "delete") {
+    request.delete(
+      {
+        headers: {
+          "auth-token": req.session.user.token,
+        },
+        url: endpoint,
+      },
+      (err, resp, body) => {
+        console.log(resp.body);
+        return res.redirect("/recipes");
+      }
+    );
+  }
+
+  if (req.body.send === "update") {
+    res.send("Should have updated");
+  }
 });
 
 // Comment routes for specific recipes
@@ -116,6 +136,7 @@ app.get("/create-recipe", auth, (req, res) => {
     title: "Gather 'n Grub - Create Recipe",
     // user: req.session.user,
     user: req.session.user,
+    path: "/create-recipe",
   });
 });
 
@@ -164,6 +185,7 @@ app.post("/create-recipe", auth, (req, res) => {
       title: "Gather 'n Grub - Create Recipe",
       recipe,
       error: [{ message: "Missing values" }],
+      path: "/create-recipe",
     });
   }
   // if ingredient_names is an array parse it to make the ingredients objects
@@ -196,6 +218,7 @@ app.post("/create-recipe", auth, (req, res) => {
       title: "Gather 'n Grub - Create Recipe",
       recipe,
       error: [{ message: "Missing ingredient name or amount" }],
+      path: "/create-recipe",
     });
   }
   // split the tag_string into the array
@@ -213,6 +236,10 @@ app.post("/create-recipe", auth, (req, res) => {
       if (err) res.render("error.ejs", { title: "Error", error: err });
 
       body = JSON.parse(body);
+      console.log(body);
+      if (body?.error) {
+        return res.render("error.ejs", { title: "Error", error: body.error });
+      }
       return res.redirect(`/recipes/${body._id}`);
     }
   );

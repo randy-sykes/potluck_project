@@ -3,7 +3,7 @@
 
 <div class="row justify-content-center mb-5 mt-3">
   <div class="col-8">
-    <form action="/create-recipe" method="POST">
+    <form action=<%= path %> :  method="POST">
 
       <div class="row g-3">
         <div class="col-12">
@@ -117,18 +117,19 @@
 
 
 
-      <% if (locals.readonly) { %>
-        <% if (locals.user) { %>
-          <% if (user.full_name == recipe.author_name) { %>
-            <div class="col-12">
-              <button id="editRecipe" type="button" class="btn btn-success">Edit</button>
-            </div>
-          <% } %>
-        <% } %>
-      <%} else {%>
-      <div class="col-12">
-        <button type="submit" class="btn btn-success">Submit Recipe</button>
-      </div>
+      <% if (locals.user && locals?.recipe?.author_name) { %>
+        <% if  (user.full_name == recipe.author_name) { %>
+          <div class="col-12">
+            <button id="editRecipe" type="button" class="btn btn-success">Edit</button>
+            <button id="deleteRecipeBtn" type="submit" class="btn btn-warning" name="send" value="delete">Delete</button>
+            <button type="submit" id="updateRecipeBtn" class="btn btn-success" name="send" value="update">Update Recipe</button>
+          </div>
+        <%}%>
+
+      <%} else if (locals.user) {%>
+        <div class="col-12">
+          <button type="submit" class="btn btn-success" name="send" value="create">Submit Recipe</button>
+        </div>
       <%}%>
     </form>
   </div>
