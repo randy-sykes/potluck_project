@@ -82,14 +82,24 @@ const updateSpecificRecipe = (req, res) => {
   res.send("UPDATE Specific Recipe route");
 };
 
-const deleteSpecificRecipe = (req, res) => {
-  const recipe_id = Number(req.params.recipe_id);
-  const recipe = dataController.getRecipeInDB(recipe_id);
-  if (user !== recipe.author) {
-    res.send("User did not create recipe.");
+const deleteSpecificRecipe = async (req, res) => {
+  const recipe_id = req.params.recipe_id;
+  const userTokenInfo = jwtValidation(req.header("auth-token"));
+
+  const recipe = await dataController.getRecipeInDB(recipe_id);
+  if (userTokenInfo._id.toString() == recipe.author.toString()) {
+    const result = await dataController.deleteRecipeInDB(recipe_id);
+    if (result?.error) return res.status(401).json(result);
+    return res.status(204).json({
+      message: `Successfully deleted recipe ${
+        recipe.recipe_name
+      } - ${recipe._id.toString()}`,
+    });
   } else {
-    const result = dataController.deleteRecipeInDB(recipe_id);
-    res.send("DELETE Specific Recipe route");
+    return res.status(401).json({
+      error: "NotAuthor",
+      message: "Provided user did not author the specific recipe.",
+    });
   }
 };
 

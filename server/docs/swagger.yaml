@@ -294,6 +294,47 @@ paths:
                     error: NotFound
                     message: No recipe found with the id :recipe_id
 
+    delete:
+      tags:
+        - recipes
+      summary: Delete a specific recipe in the database.
+      description: Delete a Recipe Object.
+      responses:
+        '204':
+          description: Delete single recipe object.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Successfully deleted recipe ${recipe_name} - ${recipe_id}"
+        '401':
+          description: Error message for deleting a single recipe request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                InvalidUser:
+                  value:
+                    error: InvalidUser
+                    message: Provided user is not registered or needs a new token
+                NotAuthor:
+                  value:
+                    error: NotAuthor
+                    message: Provided user did not author the specific recipe.
+                FailedDelete:
+                  value:
+                    error: FailedDelete
+                    message: Failed to delete the recipe {server error}
+
   /user/register:
     post:
       tags:
