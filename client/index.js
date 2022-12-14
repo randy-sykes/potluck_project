@@ -42,6 +42,13 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/about", (req, res) => {
+  const user = req.session.user || { authenticated: false };
+  res.render("about.ejs", {
+    title: "Gather 'n Grub - About",
+    user: user,
+  });
+});
 /*
 
 RECIPE ROUTES
@@ -114,17 +121,17 @@ app.post("/recipes/:recipe_id", (req, res) => {
 });
 
 // Comment routes for specific recipes
-app.post("/recipes/:recipe_id/comments", auth, (req, res) => {
-  res.send("/recipes/:recipe_id/comments POST Not setup yet");
-});
+// app.post("/recipes/:recipe_id/comments", auth, (req, res) => {
+//   res.send("/recipes/:recipe_id/comments POST Not setup yet");
+// });
 
-app.put("/recipes/:recipe_id/comments", auth, (req, res) => {
-  res.send("/recipes/:recipe_id/comments PUT Not setup yet");
-});
+// app.put("/recipes/:recipe_id/comments", auth, (req, res) => {
+//   res.send("/recipes/:recipe_id/comments PUT Not setup yet");
+// });
 
-app.delete("/recipes/:recipe_id/comments", auth, (req, res) => {
-  res.send("/recipes/:recipe_id/comments DELETE Not setup yet");
-});
+// app.delete("/recipes/:recipe_id/comments", auth, (req, res) => {
+//   res.send("/recipes/:recipe_id/comments DELETE Not setup yet");
+// });
 
 /*
 
@@ -245,10 +252,6 @@ app.post("/create-recipe", auth, (req, res) => {
   );
 });
 
-app.put("/create-recipe/:recipe_id", auth, (req, res) => {
-  res.send("/create-recipe/:recipe_id PUT Not setup yet");
-});
-
 /*
 
 LOGIN SECTION
@@ -355,17 +358,17 @@ ACCOUNT SECTION
 */
 
 // Specific user account routes
-app.get("/account", auth, (req, res) => {
-  res.send("/account GET not setup yet.");
-});
+// app.get("/account", auth, (req, res) => {
+//   res.send("/account GET not setup yet.");
+// });
 
-app.put("/account", auth, (req, res) => {
-  res.send("/account PUT not setup yet.");
-});
+// app.put("/account", auth, (req, res) => {
+//   res.send("/account PUT not setup yet.");
+// });
 
-app.delete("/account", auth, (req, res) => {
-  res.send("/account DELETE not setup yet.");
-});
+// app.delete("/account", auth, (req, res) => {
+//   res.send("/account DELETE not setup yet.");
+// });
 
 /*
 
