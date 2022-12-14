@@ -10,7 +10,9 @@ function auth(req, res, next) {
     req.user = verified;
     next();
   } catch (err) {
-    res.status(400).send("Invalid Token");
+    res
+      .status(400)
+      .json({ error: "InvalidToken", message: "Please provide a valid token" });
   }
 }
 

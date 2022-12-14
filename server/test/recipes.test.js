@@ -8,29 +8,59 @@ const server = require("../server");
 chai.use(chaiHttp);
 
 describe("recipe route tests", function () {
-  var apiToken; // Used for the API calls.
-  var recipe_id; // Used for the get specific tests
-  const userTestObj = {
+  var creationApiToken; // Used for the API calls.
+  var testApiToken;
+
+  const creationUserObj = {
     full_name: "Test",
     email: "test@example.com",
     password: "Testing123",
   };
 
+  const testUserObj = {
+    full_name: "Testing",
+    email: "testing@example.com",
+    password: "Testing123",
+  };
+
   beforeEach((done) => {
+    // Create creation user
     chai
       .request(server)
       .post("/api/user/register")
-      .send(userTestObj)
+      .send(creationUserObj)
       .end((err, res) => {
         if (err) throw err;
         chai
           .request(server)
           .post("/api/user/login")
-          .send({ email: userTestObj.email, password: userTestObj.password })
+          .send({
+            email: creationUserObj.email,
+            password: creationUserObj.password,
+          })
           .end((err, res) => {
             if (err) throw err;
-            apiToken = res.header["auth-token"];
-            done();
+            creationApiToken = res.header["auth-token"];
+            // Create test user that doesn't have permission to edit the recipes
+            chai
+              .request(server)
+              .post("/api/user/register")
+              .send(testUserObj)
+              .end((err, res) => {
+                if (err) throw err;
+                chai
+                  .request(server)
+                  .post("/api/user/login")
+                  .send({
+                    email: testUserObj.email,
+                    password: testUserObj.password,
+                  })
+                  .end((err, res) => {
+                    if (err) throw err;
+                    testApiToken = res.header["auth-token"];
+                    done();
+                  });
+              });
           });
       });
   });
@@ -307,7 +337,7 @@ describe("recipe route tests", function () {
       chai
         .request(server)
         .post("/api/recipes")
-        .set("auth-token", apiToken)
+        .set("auth-token", creationApiToken)
         .send(run.opt.postData)
         .end((err, res) => {
           res.should.have.status(run.opt.status);
@@ -329,7 +359,7 @@ describe("recipe route tests", function () {
     chai
       .request(server)
       .post("/api/recipes")
-      .set("auth-token", apiToken)
+      .set("auth-token", creationApiToken)
       .send(recipeTestObj.newRecipeSuccess)
       .end((err, res) => {
         res.should.have.status(201);
@@ -344,7 +374,7 @@ describe("recipe route tests", function () {
     chai
       .request(server)
       .post("/api/recipes")
-      .set("auth-token", apiToken)
+      .set("auth-token", creationApiToken)
       .send(recipeTestObj.newRecipeSuccess)
       .end((err, res) => {
         chai
@@ -366,7 +396,7 @@ describe("recipe route tests", function () {
     chai
       .request(server)
       .post("/api/recipes")
-      .set("auth-token", apiToken)
+      .set("auth-token", creationApiToken)
       .send(recipeTestObj.newRecipeSuccess)
       .end((err, res) => {
         res.should.have.status(201);
@@ -379,7 +409,9 @@ describe("recipe route tests", function () {
           .get(`/api/recipes/${recipe_id}`)
           .end((err, response) => {
             response.should.have.status(200);
-            expect(response.body.author_name).to.equal(userTestObj.full_name);
+            expect(response.body.author_name).to.equal(
+              creationUserObj.full_name
+            );
             done();
           });
       });
@@ -412,6 +444,97 @@ describe("recipe route tests", function () {
           message: `No recipe found with the id ${incorrect}`,
         });
         done();
+      });
+  });
+
+  it("DELETE /api/recipes/:recipe_id should return an error if the user attempting to delete is not the owner.", (done) => {
+    let recipeId;
+    const expectedReturn = {
+      error: "NotAuthor",
+      message: "Provided user did not author the specific recipe.",
+    };
+    chai
+      .request(server)
+      .post("/api/recipes")
+      .set("auth-token", creationApiToken)
+      .send(recipeTestObj.newRecipeSuccess)
+      .end((err, res) => {
+        res.should.have.status(201);
+        expect(res.body.recipe_name).to.equal(
+          recipeTestObj.newRecipeSuccess.recipe.recipe_name
+        );
+        recipeId = res.body._id;
+        chai
+          .request(server)
+          .delete(`/api/recipes/${recipeId}`)
+          .set("auth-token", testApiToken)
+          .end((err, res) => {
+            if (err) throw err;
+            res.should.have.status(401);
+            res.body.should.be.deep.equal(expectedReturn);
+            done();
+          });
+      });
+  });
+
+  it("DELETE /api/recipes/:recipe_id should return an error if the user attempting to delete is not valid.", (done) => {
+    let recipeId;
+    const fakeToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzk2NDAzZDA1YTEzYjQ5ZWZkMWJjNTEiLCJlbWFpbCI6InJqc3lrZXMyOEBvdXRsb29rLmNvbSIsImlhdCI6MTY3MTA1NDI3OH0.B-za2GN29JMbZQRwiBgk8f4BNly-h7k59kKbItwNwLk";
+    const expectedReturn = {
+      error: "InvalidToken",
+      message: "Please provide a valid token",
+    };
+    chai
+      .request(server)
+      .post("/api/recipes")
+      .set("auth-token", creationApiToken)
+      .send(recipeTestObj.newRecipeSuccess)
+      .end((err, res) => {
+        res.should.have.status(201);
+        expect(res.body.recipe_name).to.equal(
+          recipeTestObj.newRecipeSuccess.recipe.recipe_name
+        );
+        recipeId = res.body._id;
+        chai
+          .request(server)
+          .delete(`/api/recipes/${recipeId}`)
+          .set("auth-token", fakeToken)
+          .end((err, res) => {
+            if (err) throw err;
+            res.should.have.status(400);
+            res.body.should.be.deep.equal(expectedReturn);
+            done();
+          });
+      });
+  });
+
+  it("DELETE /api/recipes/:recipe_id should return successful if the user attempting to delete is the owner.", (done) => {
+    let recipeId;
+    chai
+      .request(server)
+      .post("/api/recipes")
+      .set("auth-token", creationApiToken)
+      .send(recipeTestObj.newRecipeSuccess)
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(201);
+        expect(res.body.recipe_name).to.equal(
+          recipeTestObj.newRecipeSuccess.recipe.recipe_name
+        );
+        recipeId = res.body._id;
+        const expectedReturn = {
+          message: `Successfully deleted recipe ${res.body.recipe_name} - ${recipeId}`,
+        };
+        chai
+          .request(server)
+          .delete(`/api/recipes/${recipeId}`)
+          .set("auth-token", creationApiToken)
+          .end((err, res) => {
+            if (err) throw err;
+            res.should.have.status(204);
+            done();
+          });
       });
   });
 });

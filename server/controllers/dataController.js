@@ -1,3 +1,4 @@
+const { validRecipeId } = require("../helpers/validations");
 const { RecipeModel } = require("../models/recipe");
 const { UserModel } = require("../models/user");
 const ObjectId = require("mongoose").Types.ObjectId;
@@ -36,6 +37,17 @@ const getRecipeInDB = async (recipe_id) => {
   return recipe;
 };
 
+const deleteRecipeInDB = async (recipe_id) => {
+  const deleted = await RecipeModel.deleteOne({ _id: recipe_id });
+  if (deleted?.deletedCount > 0) {
+    return { message: `Successfully deleted ${recipe_id}` };
+  }
+  return {
+    error: "FailedDelete",
+    message: `Failed to delete the recipe:\n${deleted}`,
+  };
+};
+
 // User Functions
 const createUserInDB = async (user) => {
   const data = await UserModel.create({ ...user });
@@ -69,6 +81,7 @@ module.exports = {
   createNewRecipeInDB,
   doesRecipeExistInDB,
   getRecipeInDB,
+  deleteRecipeInDB,
   createUserInDB,
   userExistsInDB,
   getUserFromDB,
