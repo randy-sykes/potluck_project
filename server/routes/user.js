@@ -10,10 +10,10 @@ router.post("/login", userController.loginUser);
 router.post("/register", userController.createUser);
 
 // Specific user account routes
-router.get("/:username", auth, userController.getUser);
+// router.get("/:username", auth, userController.getUser);
 
-router.put("/:username", auth, userController.updateUser);
+// router.put("/:username", auth, userController.updateUser);
 
-router.delete("/:username", auth, userController.deleteUser);
+// router.delete("/:username", auth, userController.deleteUser);
 
 module.exports = router;
