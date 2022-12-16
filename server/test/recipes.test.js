@@ -523,9 +523,6 @@ describe("recipe route tests", function () {
           recipeTestObj.newRecipeSuccess.recipe.recipe_name
         );
         recipeId = res.body._id;
-        const expectedReturn = {
-          message: `Successfully deleted recipe ${res.body.recipe_name} - ${recipeId}`,
-        };
         chai
           .request(server)
           .delete(`/api/recipes/${recipeId}`)
@@ -533,6 +530,64 @@ describe("recipe route tests", function () {
           .end((err, res) => {
             if (err) throw err;
             res.should.have.status(204);
+            done();
+          });
+      });
+  });
+
+  it("PUT /api/recipes/:recipe_id should return a failure when a user tries to update a recipe that isn't theirs", (done) => {
+    let createdRecipe;
+    const newRecipe = {
+      recipe: {
+        recipe_name: "Test1",
+        description: "Test1 description",
+        directions: "Test1 directions",
+        servings: 10,
+        prep_time: 10,
+        cook_time: 10,
+        image_source: "",
+        ingredients: [
+          {
+            ingredient_name: "Test1 ingredient",
+            measurement: "Test1 measurement",
+            amount: "Test1 amount",
+          },
+        ],
+      },
+    };
+
+    const updateFields = {
+      servings: 1,
+    };
+    chai
+      .request(server)
+      .post("/api/recipes")
+      .set("auth-token", creationApiToken)
+      .send(recipeTestObj.newRecipeSuccess)
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(201);
+        expect(res.body.recipe_name).to.equal(
+          recipeTestObj.newRecipeSuccess.recipe.recipe_name
+        );
+        createdRecipe = res.body._id;
+        const expectedReturn = {
+          message: `Successfully deleted recipe ${res.body.recipe_name} - ${createdRecipe._id}`,
+        };
+        chai
+          .request(server)
+          .put(`/api/recipes/${recipeId}`)
+          .set("auth-token", creationApiToken)
+          .send({
+            recipe: {
+              ...createdRecipe,
+              ...updateFields,
+            },
+          })
+          .end((err, res) => {
+            if (err) throw err;
+            res.should.have.status(401);
+            res..body.should.deep.equal({ error: "UnauthorizedUser", message: "User does not own recipe."});
             done();
           });
       });
