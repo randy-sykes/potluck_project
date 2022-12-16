@@ -260,7 +260,7 @@ describe("recipe route tests", function () {
 
   let runs = [
     {
-      it: "fail when provided data missing the recipe_name.",
+      it: "fail when provided data missing the recipe name.",
       opt: {
         status: 406,
         postData: recipeTestObj.recipeMissingName,
@@ -477,38 +477,6 @@ describe("recipe route tests", function () {
       });
   });
 
-  it("DELETE /api/recipes/:recipe_id should return an error if the user attempting to delete is not valid.", (done) => {
-    let recipeId;
-    const fakeToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzk2NDAzZDA1YTEzYjQ5ZWZkMWJjNTEiLCJlbWFpbCI6InJqc3lrZXMyOEBvdXRsb29rLmNvbSIsImlhdCI6MTY3MTA1NDI3OH0.B-za2GN29JMbZQRwiBgk8f4BNly-h7k59kKbItwNwLk";
-    const expectedReturn = {
-      error: "InvalidToken",
-      message: "Please provide a valid token",
-    };
-    chai
-      .request(server)
-      .post("/api/recipes")
-      .set("auth-token", creationApiToken)
-      .send(recipeTestObj.newRecipeSuccess)
-      .end((err, res) => {
-        res.should.have.status(201);
-        expect(res.body.recipe_name).to.equal(
-          recipeTestObj.newRecipeSuccess.recipe.recipe_name
-        );
-        recipeId = res.body._id;
-        chai
-          .request(server)
-          .delete(`/api/recipes/${recipeId}`)
-          .set("auth-token", fakeToken)
-          .end((err, res) => {
-            if (err) throw err;
-            res.should.have.status(400);
-            res.body.should.be.deep.equal(expectedReturn);
-            done();
-          });
-      });
-  });
-
   it("DELETE /api/recipes/:recipe_id should return successful if the user attempting to delete is the owner.", (done) => {
     let recipeId;
     chai
@@ -523,9 +491,6 @@ describe("recipe route tests", function () {
           recipeTestObj.newRecipeSuccess.recipe.recipe_name
         );
         recipeId = res.body._id;
-        const expectedReturn = {
-          message: `Successfully deleted recipe ${res.body.recipe_name} - ${recipeId}`,
-        };
         chai
           .request(server)
           .delete(`/api/recipes/${recipeId}`)
@@ -533,6 +498,173 @@ describe("recipe route tests", function () {
           .end((err, res) => {
             if (err) throw err;
             res.should.have.status(204);
+            done();
+          });
+      });
+  });
+
+  it("PUT /api/recipes/:recipe_id should return a failure when a user tries to update a recipe that isn't theirs", (done) => {
+    let createdRecipe;
+    const newRecipe = {
+      recipe: {
+        recipe_name: "Test1",
+        description: "Test1 description",
+        directions: "Test1 directions",
+        servings: 10,
+        prep_time: 10,
+        cook_time: 10,
+        image_source: "",
+        ingredients: [
+          {
+            ingredient_name: "Test1 ingredient",
+            measurement: "Test1 measurement",
+            amount: "Test1 amount",
+          },
+        ],
+      },
+    };
+
+    const updateFields = {
+      servings: 1,
+    };
+    chai
+      .request(server)
+      .post("/api/recipes")
+      .set("auth-token", creationApiToken)
+      .send(newRecipe)
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(201);
+        expect(res.body.recipe_name).to.equal(newRecipe.recipe.recipe_name);
+        createdRecipe = res.body;
+        const expectedReturn = {
+          message: `Successfully deleted recipe ${res.body.recipe_name} - ${createdRecipe._id}`,
+        };
+        chai
+          .request(server)
+          .put(`/api/recipes/${createdRecipe._id}`)
+          .set("auth-token", testApiToken)
+          .send({
+            recipe: {
+              ...createdRecipe,
+              ...updateFields,
+            },
+          })
+          .end((err, res) => {
+            if (err) throw err;
+            res.should.have.status(401);
+            res.body.should.deep.equal({
+              error: "InvalidAuthor",
+              message: "User does not own recipe.",
+            });
+            done();
+          });
+      });
+  });
+
+  it("PUT /api/recipes/:recipe_id should return updated recipe when a user updates a recipe that is theirs", (done) => {
+    let createdRecipe;
+    const newRecipe = {
+      recipe: {
+        recipe_name: "Test1",
+        description: "Test1 description",
+        directions: "Test1 directions",
+        servings: 10,
+        prep_time: 10,
+        cook_time: 10,
+        image_source: "",
+        ingredients: [
+          {
+            ingredient_name: "Test1 ingredient",
+            measurement: "Test1 measurement",
+            amount: "Test1 amount",
+          },
+        ],
+      },
+    };
+
+    chai
+      .request(server)
+      .post("/api/recipes")
+      .set("auth-token", creationApiToken)
+      .send(newRecipe)
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(201);
+        expect(res.body.recipe_name).to.equal(newRecipe.recipe.recipe_name);
+        createdRecipe = res.body;
+        const expectedReturn = {
+          message: `Successfully deleted recipe ${res.body.recipe_name} - ${createdRecipe._id}`,
+        };
+        chai
+          .request(server)
+          .put(`/api/recipes/${createdRecipe._id}`)
+          .set("auth-token", creationApiToken)
+          .send({
+            recipe: { ...createdRecipe },
+          })
+          .end((err, res) => {
+            if (err) throw err;
+            res.should.have.status(400);
+            res.body.should.deep.equal({
+              error: "NoChange",
+              message: "No change was detected with what was sent.",
+            });
+            done();
+          });
+      });
+  });
+
+  it("PUT /api/recipes/:recipe_id should return updated recipe when a user updates a recipe that is theirs", (done) => {
+    let createdRecipe;
+    const newRecipe = {
+      recipe: {
+        recipe_name: "Test1",
+        description: "Test1 description",
+        directions: "Test1 directions",
+        servings: 10,
+        prep_time: 10,
+        cook_time: 10,
+        image_source: "",
+        ingredients: [
+          {
+            ingredient_name: "Test1 ingredient",
+            measurement: "Test1 measurement",
+            amount: "Test1 amount",
+          },
+        ],
+      },
+    };
+
+    const updateFields = {
+      servings: 1,
+    };
+    let updatedRecipeInfo;
+    chai
+      .request(server)
+      .post("/api/recipes")
+      .set("auth-token", creationApiToken)
+      .send(newRecipe)
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(201);
+        expect(res.body.recipe_name).to.equal(newRecipe.recipe.recipe_name);
+        createdRecipe = res.body;
+        const expectedReturn = {
+          message: `Successfully deleted recipe ${res.body.recipe_name} - ${createdRecipe._id}`,
+        };
+        updatedRecipeInfo = { ...createdRecipe, ...updateFields };
+        chai
+          .request(server)
+          .put(`/api/recipes/${createdRecipe._id}`)
+          .set("auth-token", creationApiToken)
+          .send({
+            recipe: { ...updatedRecipeInfo },
+          })
+          .end((err, res) => {
+            if (err) throw err;
+            res.should.have.status(201);
+            res.body.should.deep.equal(updatedRecipeInfo);
             done();
           });
       });

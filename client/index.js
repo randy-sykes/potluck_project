@@ -108,7 +108,8 @@ app.post("/recipes/:recipe_id", (req, res) => {
         },
         url: endpoint,
       },
-      (err, resp, body) => {
+      (err, resp) => {
+        if (err) throw err;
         console.log(resp.body);
         return res.redirect("/recipes");
       }
@@ -116,7 +117,112 @@ app.post("/recipes/:recipe_id", (req, res) => {
   }
 
   if (req.body.send === "update") {
-    res.send("Should have updated");
+    let error = [];
+    // Get variables from the body
+    const {
+      _id,
+      author,
+      source,
+      created_date,
+      image_source,
+      recipe_name,
+      description,
+      directions,
+      servings,
+      prep_time,
+      cook_time,
+      ingredient_names,
+      amounts,
+      measurements,
+      tag_string,
+    } = req.body;
+    // create a basic recipe object to return in case of failure
+    const recipe = {
+      _id,
+      author,
+      source,
+      created_date,
+      image_source,
+      recipe_name,
+      description,
+      directions,
+      servings,
+      prep_time,
+      cook_time,
+      ingredients: [],
+      tags: [],
+    };
+    // Check if values exist
+    if (
+      !(
+        _id &&
+        author &&
+        source &&
+        created_date &&
+        recipe_name &&
+        recipe_name &&
+        description &&
+        directions &&
+        servings &&
+        prep_time &&
+        cook_time &&
+        ingredient_names &&
+        amounts
+      )
+    ) {
+      // Return back to create-recipe
+      console.log("FAIL!");
+      return res.redirect(`/recipes/${recipe_id}`);
+    }
+
+    // if ingredient_names is an array parse it to make the ingredients objects
+    if (Array.isArray(ingredient_names)) {
+      // Create ingredient objects and add them to the recipe ingredients array
+      ingredient_names.forEach((i, index) => {
+        if (ingredient_names[index] === "" && amounts[index] === "") return;
+        if (ingredient_names[index] === "" || amounts[index] === "")
+          error.push({
+            message: `Missing ingredient name or amount in entry ${index + 1}`,
+          });
+        recipe.ingredients.push({
+          ingredient_name: ingredient_names[index],
+          amount: amounts[index],
+          measurement: measurements[index],
+        });
+      });
+    } else {
+      // Otherwise just create 1 object for it
+      recipe.ingredients.push({
+        ingredient_name: ingredient_names,
+        amount: amounts,
+        measurement: measurements,
+      });
+    }
+
+    if (error.length > 0) {
+      res.redirect(`/recipes/${recipe_id}`);
+    }
+
+    request.put(
+      {
+        headers: {
+          "content-type": "application/json",
+          "auth-token": req.session.user.token,
+        },
+        url: `${API_URI}/recipes/${recipe_id}`,
+        body: JSON.stringify({ recipe: recipe }),
+      },
+      (err, resp, body) => {
+        if (err) res.render("error.ejs", { title: "Error", error: err });
+
+        body = JSON.parse(body);
+        if (body?.error) {
+          // return res.render("error.ejs", { title: "Error", error: body.error });
+          return res.redirect("/error");
+        }
+        return res.redirect(`/recipes/${body._id}`);
+      }
+    );
   }
 });
 

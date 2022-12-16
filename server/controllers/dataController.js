@@ -48,6 +48,20 @@ const deleteRecipeInDB = async (recipe_id) => {
   };
 };
 
+const updateSpecificRecipeInDB = async (recipe) => {
+  const retData = await RecipeModel.updateOne({ _id: recipe._id }, recipe);
+  if (retData.matchedCount === 0)
+    return {
+      error: "UpdateFailed",
+      message: "No recipe found with provided ID",
+    };
+  if (retData.matchedCount === 1 && retData.modifiedCount === 0)
+    return {
+      error: "NoChange",
+      message: "No change was detected with what was sent.",
+    };
+  return recipe;
+};
 // User Functions
 const createUserInDB = async (user) => {
   const data = await UserModel.create({ ...user });
@@ -82,6 +96,7 @@ module.exports = {
   doesRecipeExistInDB,
   getRecipeInDB,
   deleteRecipeInDB,
+  updateSpecificRecipeInDB,
   createUserInDB,
   userExistsInDB,
   getUserFromDB,
