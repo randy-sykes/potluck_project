@@ -1,21 +1,7 @@
 const dataController = require("./dataController");
 const { jwtValidation } = require("../helpers/validations");
 
-const getAllRecipes = async (req, res) => {
-  const result = await dataController.getAllRecipesInDB();
-  if (result?.error) {
-    res.status(500).json({ error: result.message });
-  } else {
-    res.json(result);
-  }
-};
-
-const createNewRecipe = async (req, res) => {
-  if (req.body.recipe === undefined) {
-    res.status(400).json({ error: "Please provide a recipe object." });
-    return;
-  }
-  const recipe = req.body.recipe;
+const validRecipeObj = (recipe) => {
   const recipeKeys = [
     "recipe_name",
     "description",
@@ -33,6 +19,25 @@ const createNewRecipe = async (req, res) => {
       }
     });
   });
+  return missingFields;
+};
+
+const getAllRecipes = async (req, res) => {
+  const result = await dataController.getAllRecipesInDB();
+  if (result?.error) {
+    res.status(500).json({ error: result.message });
+  } else {
+    res.json(result);
+  }
+};
+
+const createNewRecipe = async (req, res) => {
+  if (req.body.recipe === undefined) {
+    res.status(400).json({ error: "Please provide a recipe object." });
+    return;
+  }
+  const recipe = req.body.recipe;
+  const missingFields = validRecipeObj(recipe);
   if (missingFields.length > 0) {
     res
       .status(406)
@@ -78,8 +83,39 @@ const getSpecificRecipe = async (req, res) => {
   res.status(200).json(recipe);
 };
 
-const updateSpecificRecipe = (req, res) => {
-  res.send("UPDATE Specific Recipe route");
+const updateSpecificRecipe = async (req, res) => {
+  if (req.body.recipe === undefined) {
+    res.status(400).json({ error: "Please provide a recipe object." });
+    return;
+  }
+  const recipe = req.body.recipe;
+  const missingFields = validRecipeObj(recipe);
+  if (missingFields.length > 0) {
+    res
+      .status(406)
+      .json({ error: "MissingFields", missingFields: missingFields });
+    return;
+  }
+  const userTokenInfo = jwtValidation(req.header("auth-token"));
+  const validUser = await dataController.userExistsInDB(
+    "_id",
+    userTokenInfo._id
+  );
+  if (!validUser) {
+    res.status(401).json({
+      error: "InvalidAuthor",
+      message: "Provided author is not registered",
+    });
+    return;
+  }
+  if (recipe.author !== userTokenInfo._id) {
+    return res.status(401).json({
+      error: "UnauthorizedUser",
+      message: "User does not own recipe.",
+    });
+  }
+  res.send("stopping here");
+  // TODO: Finish logic for update
 };
 
 const deleteSpecificRecipe = async (req, res) => {

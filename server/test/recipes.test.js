@@ -260,7 +260,7 @@ describe("recipe route tests", function () {
 
   let runs = [
     {
-      it: "fail when provided data missing the recipe_name.",
+      it: "fail when provided data missing the recipe name.",
       opt: {
         status: 406,
         postData: recipeTestObj.recipeMissingName,
@@ -477,38 +477,6 @@ describe("recipe route tests", function () {
       });
   });
 
-  it("DELETE /api/recipes/:recipe_id should return an error if the user attempting to delete is not valid.", (done) => {
-    let recipeId;
-    const fakeToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzk2NDAzZDA1YTEzYjQ5ZWZkMWJjNTEiLCJlbWFpbCI6InJqc3lrZXMyOEBvdXRsb29rLmNvbSIsImlhdCI6MTY3MTA1NDI3OH0.B-za2GN29JMbZQRwiBgk8f4BNly-h7k59kKbItwNwLk";
-    const expectedReturn = {
-      error: "InvalidToken",
-      message: "Please provide a valid token",
-    };
-    chai
-      .request(server)
-      .post("/api/recipes")
-      .set("auth-token", creationApiToken)
-      .send(recipeTestObj.newRecipeSuccess)
-      .end((err, res) => {
-        res.should.have.status(201);
-        expect(res.body.recipe_name).to.equal(
-          recipeTestObj.newRecipeSuccess.recipe.recipe_name
-        );
-        recipeId = res.body._id;
-        chai
-          .request(server)
-          .delete(`/api/recipes/${recipeId}`)
-          .set("auth-token", fakeToken)
-          .end((err, res) => {
-            if (err) throw err;
-            res.should.have.status(400);
-            res.body.should.be.deep.equal(expectedReturn);
-            done();
-          });
-      });
-  });
-
   it("DELETE /api/recipes/:recipe_id should return successful if the user attempting to delete is the owner.", (done) => {
     let recipeId;
     chai
@@ -563,21 +531,19 @@ describe("recipe route tests", function () {
       .request(server)
       .post("/api/recipes")
       .set("auth-token", creationApiToken)
-      .send(recipeTestObj.newRecipeSuccess)
+      .send(newRecipe)
       .end((err, res) => {
         if (err) throw err;
         res.should.have.status(201);
-        expect(res.body.recipe_name).to.equal(
-          recipeTestObj.newRecipeSuccess.recipe.recipe_name
-        );
-        createdRecipe = res.body._id;
+        expect(res.body.recipe_name).to.equal(newRecipe.recipe.recipe_name);
+        createdRecipe = res.body;
         const expectedReturn = {
           message: `Successfully deleted recipe ${res.body.recipe_name} - ${createdRecipe._id}`,
         };
         chai
           .request(server)
-          .put(`/api/recipes/${recipeId}`)
-          .set("auth-token", creationApiToken)
+          .put(`/api/recipes/${createdRecipe._id}`)
+          .set("auth-token", testApiToken)
           .send({
             recipe: {
               ...createdRecipe,
@@ -587,7 +553,10 @@ describe("recipe route tests", function () {
           .end((err, res) => {
             if (err) throw err;
             res.should.have.status(401);
-            res..body.should.deep.equal({ error: "UnauthorizedUser", message: "User does not own recipe."});
+            res.body.should.deep.equal({
+              error: "UnauthorizedUser",
+              message: "User does not own recipe.",
+            });
             done();
           });
       });
