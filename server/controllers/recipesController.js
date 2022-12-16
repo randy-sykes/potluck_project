@@ -103,19 +103,26 @@ const updateSpecificRecipe = async (req, res) => {
   );
   if (!validUser) {
     res.status(401).json({
-      error: "InvalidAuthor",
+      error: "UnauthorizedUser",
       message: "Provided author is not registered",
     });
     return;
   }
   if (recipe.author !== userTokenInfo._id) {
     return res.status(401).json({
-      error: "UnauthorizedUser",
+      error: "InvalidAuthor",
       message: "User does not own recipe.",
     });
   }
-  res.send("stopping here");
-  // TODO: Finish logic for update
+
+  const updateRecipe = await dataController.updateSpecificRecipeInDB(recipe);
+  if (updateRecipe?.error === "UpdateFailed") {
+    return res.status(400).json(updateRecipe);
+  }
+  if (updateRecipe?.error === "NoChange") {
+    return res.status(400).json(updateRecipe);
+  }
+  return res.status(201).json(updateRecipe);
 };
 
 const deleteSpecificRecipe = async (req, res) => {

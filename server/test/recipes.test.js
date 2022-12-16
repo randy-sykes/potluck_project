@@ -554,9 +554,117 @@ describe("recipe route tests", function () {
             if (err) throw err;
             res.should.have.status(401);
             res.body.should.deep.equal({
-              error: "UnauthorizedUser",
+              error: "InvalidAuthor",
               message: "User does not own recipe.",
             });
+            done();
+          });
+      });
+  });
+
+  it("PUT /api/recipes/:recipe_id should return updated recipe when a user updates a recipe that is theirs", (done) => {
+    let createdRecipe;
+    const newRecipe = {
+      recipe: {
+        recipe_name: "Test1",
+        description: "Test1 description",
+        directions: "Test1 directions",
+        servings: 10,
+        prep_time: 10,
+        cook_time: 10,
+        image_source: "",
+        ingredients: [
+          {
+            ingredient_name: "Test1 ingredient",
+            measurement: "Test1 measurement",
+            amount: "Test1 amount",
+          },
+        ],
+      },
+    };
+
+    chai
+      .request(server)
+      .post("/api/recipes")
+      .set("auth-token", creationApiToken)
+      .send(newRecipe)
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(201);
+        expect(res.body.recipe_name).to.equal(newRecipe.recipe.recipe_name);
+        createdRecipe = res.body;
+        const expectedReturn = {
+          message: `Successfully deleted recipe ${res.body.recipe_name} - ${createdRecipe._id}`,
+        };
+        chai
+          .request(server)
+          .put(`/api/recipes/${createdRecipe._id}`)
+          .set("auth-token", creationApiToken)
+          .send({
+            recipe: { ...createdRecipe },
+          })
+          .end((err, res) => {
+            if (err) throw err;
+            res.should.have.status(400);
+            res.body.should.deep.equal({
+              error: "NoChange",
+              message: "No change was detected with what was sent.",
+            });
+            done();
+          });
+      });
+  });
+
+  it("PUT /api/recipes/:recipe_id should return updated recipe when a user updates a recipe that is theirs", (done) => {
+    let createdRecipe;
+    const newRecipe = {
+      recipe: {
+        recipe_name: "Test1",
+        description: "Test1 description",
+        directions: "Test1 directions",
+        servings: 10,
+        prep_time: 10,
+        cook_time: 10,
+        image_source: "",
+        ingredients: [
+          {
+            ingredient_name: "Test1 ingredient",
+            measurement: "Test1 measurement",
+            amount: "Test1 amount",
+          },
+        ],
+      },
+    };
+
+    const updateFields = {
+      servings: 1,
+    };
+    let updatedRecipeInfo;
+    chai
+      .request(server)
+      .post("/api/recipes")
+      .set("auth-token", creationApiToken)
+      .send(newRecipe)
+      .end((err, res) => {
+        if (err) throw err;
+        res.should.have.status(201);
+        expect(res.body.recipe_name).to.equal(newRecipe.recipe.recipe_name);
+        createdRecipe = res.body;
+        const expectedReturn = {
+          message: `Successfully deleted recipe ${res.body.recipe_name} - ${createdRecipe._id}`,
+        };
+        updatedRecipeInfo = { ...createdRecipe, ...updateFields };
+        chai
+          .request(server)
+          .put(`/api/recipes/${createdRecipe._id}`)
+          .set("auth-token", creationApiToken)
+          .send({
+            recipe: { ...updatedRecipeInfo },
+          })
+          .end((err, res) => {
+            if (err) throw err;
+            res.should.have.status(201);
+            res.body.should.deep.equal(updatedRecipeInfo);
             done();
           });
       });
