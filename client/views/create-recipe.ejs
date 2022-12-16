@@ -7,8 +7,11 @@
 
       <div class="row g-3">
         <div class="col-12">
-
-          <input type="hidden" name="image_source" value="<%= recipe.image_source %>">
+          <% if (locals?.recipe) {%>
+            <% if (recipe?.image_source) {%>
+              <input type="hidden" name="image_source" value="<%= recipe?.image_source %>">
+            <% } %>
+          <% } %>
           IMAGE
         </div>
       </div>
