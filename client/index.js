@@ -13,6 +13,13 @@ if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
+// Cloudinary presets for URL image creation:
+const cloud = {
+  thumb:
+    "https://res.cloudinary.com/dq8w2lty6/image/upload/c_limit,h_60,w_90/v1671470369/",
+  x250: "https://res.cloudinary.com/dq8w2lty6/image/upload/c_scale,h_250,w_250/v1671470369/",
+};
+
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -90,6 +97,7 @@ app.get("/recipes/:recipe_id", (req, res) => {
         recipe,
         readonly,
         user,
+        cloud_url: cloud.x250,
         path: `/recipes/${recipe_id}`,
       });
     }
@@ -114,9 +122,7 @@ app.post("/recipes/:recipe_id", (req, res) => {
         return res.redirect("/recipes");
       }
     );
-  }
-
-  if (req.body.send === "update") {
+  } else {
     let error = [];
     // Get variables from the body
     const {
@@ -220,6 +226,7 @@ app.post("/recipes/:recipe_id", (req, res) => {
           // return res.render("error.ejs", { title: "Error", error: body.error });
           return res.redirect("/error");
         }
+        console.log("Recipe updated: ", recipe);
         return res.redirect(`/recipes/${body._id}`);
       }
     );
@@ -261,6 +268,7 @@ app.post("/create-recipe", auth, (req, res) => {
     description,
     directions,
     servings,
+    image_source,
     prep_time,
     cook_time,
     ingredient_names,
@@ -274,6 +282,7 @@ app.post("/create-recipe", auth, (req, res) => {
     description,
     directions,
     servings,
+    image_source,
     prep_time,
     cook_time,
     ingredients: [],

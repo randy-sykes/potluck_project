@@ -3,8 +3,8 @@
 
 <% recipes.forEach((recipe) => { %>
   <div>
+    <img src="https://res.cloudinary.com/dq8w2lty6/image/upload/c_limit,h_60,w_90/v1671470369/<%= recipe.image_source %>" alt="<%= recipe.image_name %>">
     <h3><a href="/recipes/<%= recipe._id %>"><%= recipe.recipe_name %></a></h3>
-    <h6><%= recipe.author %></h6>
   </div>
 
 <% }) %>
