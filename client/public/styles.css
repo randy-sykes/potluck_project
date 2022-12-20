@@ -65,7 +65,43 @@ h1 {
     -webkit-text-stroke: 2px black;
 }
 
-p {
+.about {
     font-size: 55px;
     font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.card {
+    background-color: #FFA384;
+}
+
+.decisions {
+    text-align: center;
+}
+
+.row {
+    margin-top: 15px;
+}
+
+.card-body {
+    text-align: center;
+}
+
+.card {
+    background-color: #FFA384;
+}
+
+.decisions {
+    text-align: center;
+}
+
+.row {
+    margin-top: 15px;
+}
+
+.card-body {
+    text-align: center;
+}
+
+.card-img-bottom {
+    height: 20rem;
 }
