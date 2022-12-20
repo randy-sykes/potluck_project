@@ -105,3 +105,8 @@ h1 {
 .card-img-bottom {
     height: 20rem;
 }
+
+.logo-img {
+  height: 4rem;
+  border-radius: 50%;
+}
