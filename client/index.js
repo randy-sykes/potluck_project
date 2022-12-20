@@ -43,7 +43,7 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   const user = req.session.user || { authenticated: false };
   res.render("home.ejs", {
-    title: "Gather 'n Grub",
+    title: "Gather & Grub",
     user: user,
     errors: req.session.error,
   });
@@ -52,7 +52,7 @@ app.get("/", (req, res) => {
 app.get("/about", (req, res) => {
   const user = req.session.user || { authenticated: false };
   res.render("about.ejs", {
-    title: "Gather 'n Grub - About",
+    title: "Gather & Grub - About",
     user: user,
   });
 });
@@ -67,13 +67,13 @@ app.get("/recipes", (req, res) => {
     if (!error && resp.statusCode === 200) {
       const recipes = JSON.parse(body);
       return res.render("allRecipes.ejs", {
-        title: "Gather 'n Grub - All Recipes",
+        title: "Gather & Grub - All Recipes",
         recipes,
         user: req.session.user,
       });
     }
     res.render("error.ejs", {
-      title: "Gather 'n Grub - Error",
+      title: "Gather & Grub - Error",
     });
   });
 });
@@ -93,7 +93,7 @@ app.get("/recipes/:recipe_id", (req, res) => {
         user = req.session.user;
       }
       return res.render("create-recipe.ejs", {
-        title: `Gather 'n Grub - ${recipe.recipe_name}`,
+        title: `Gather & Grub - ${recipe.recipe_name}`,
         recipe,
         readonly,
         user,
@@ -253,7 +253,7 @@ CREATE RECIPE
 */
 app.get("/create-recipe", auth, (req, res) => {
   res.render("create-recipe.ejs", {
-    title: "Gather 'n Grub - Create Recipe",
+    title: "Gather & Grub - Create Recipe",
     // user: req.session.user,
     user: req.session.user,
     path: "/create-recipe",
@@ -304,7 +304,7 @@ app.post("/create-recipe", auth, (req, res) => {
     // Return back to create-recipe
     console.log("FAIL!");
     return res.render("create-recipe.ejs", {
-      title: "Gather 'n Grub - Create Recipe",
+      title: "Gather & Grub - Create Recipe",
       recipe,
       error: [{ message: "Missing values" }],
       path: "/create-recipe",
@@ -337,7 +337,7 @@ app.post("/create-recipe", auth, (req, res) => {
   if (error.length > 0) {
     recipe.tag_string = tag_string;
     return res.render("create-recipe.ejs", {
-      title: "Gather 'n Grub - Create Recipe",
+      title: "Gather & Grub - Create Recipe",
       recipe,
       error: [{ message: "Missing ingredient name or amount" }],
       path: "/create-recipe",
@@ -458,7 +458,7 @@ app.post("/register", (req, res) => {
         errors.push({ message: `Missing information ${body}` });
       }
       res.render("home.ejs", {
-        title: "Gather 'n Grub",
+        title: "Gather & Grub",
         errors,
         user: {},
       });
@@ -494,4 +494,4 @@ app.get("*", (req, res) => {
   res.send("Why are you here?");
 });
 
-app.listen(PORT, () => console.log(`Gather 'n Grub using port ${PORT}`));
+app.listen(PORT, () => console.log(`Gather & Grub using port ${PORT}`));
