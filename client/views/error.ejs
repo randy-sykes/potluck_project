@@ -1,0 +1,7 @@
+<%- include('partials/header', { title: locals.title ? title : "Gather & Grub - ERROR!", user: locals.user ? user : {authenticated: false} }) %>
+<%- include('partials/modal', { user: locals.user ? user : {authenticated: false} }) %>
+
+
+  <h3><%= error %></h3>
+
+<%- include('partials/footer')  %>

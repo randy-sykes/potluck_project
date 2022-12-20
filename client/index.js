@@ -224,7 +224,7 @@ app.post("/recipes/:recipe_id", (req, res) => {
         body = JSON.parse(body);
         if (body?.error) {
           // return res.render("error.ejs", { title: "Error", error: body.error });
-          return res.redirect("/error");
+          return res.render("error.ejs", { title: "Error", error: err });
         }
         console.log("Recipe updated: ", recipe);
         return res.redirect(`/recipes/${body._id}`);
@@ -375,7 +375,11 @@ LOGIN SECTION
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   // Ensure email and password have data
-  if (!(email && password)) return res.send("Email and Password required");
+  if (!(email && password))
+    return res.render("error.ejs", {
+      title: "Gather & Grub - Error",
+      error: ["Email and password required to login"],
+    });
   // Next we check to see if they are valid:
 
   request.post(
@@ -446,7 +450,11 @@ app.post("/register", (req, res) => {
     function (err, resp, body) {
       const status = resp.statusCode;
       if (status === 201) {
-        return res.send("Created user, please login");
+        return res.render("home.ejs", {
+          title: "Gather & Grub",
+          errors: ["Created user, please login"],
+          user: {},
+        });
       }
       if (status === 400) {
         errors.push({ message: "Please fill out the form" });
@@ -491,7 +499,10 @@ WILDCARD ROUTE STAYS AT BOTTOM
 
 */
 app.get("*", (req, res) => {
-  res.send("Why are you here?");
+  res.render("error.ejs", {
+    title: "Gather & Grub - Error",
+    error: "Why are you here?",
+  });
 });
 
 app.listen(PORT, () => console.log(`Gather & Grub using port ${PORT}`));
