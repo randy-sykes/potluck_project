@@ -1,0 +1,161 @@
+<%- include('partials/header', { title: locals?.title || "Gather 'n Grub - Create Recipe", user: locals?.user || {authenticated: false}, page: "create-recipe" }) %>
+<%- include('partials/modal', { user: locals?.user || {authenticated: false} }) %>
+
+<div class="row justify-content-center mb-5 mt-3">
+  <div class="col-8">
+
+
+    <% if ((locals.user && locals?.recipe?.author_name) || title == "Gather 'n Grub - Create Recipe" ){ %>
+      <% if  (title == "Gather 'n Grub - Create Recipe" || (user.full_name == recipe.author_name)) { %>
+        <button id="upload_widget" class="cloudinary-button">Upload image</button>
+        <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+      <% } %>
+    <% } %>
+
+
+    <form action=<%= path %> :  method="POST">
+
+      <div class="row g-3">
+        <div class="col-12">
+          <% if (locals?.recipe) {%>
+            <% if (recipe?.image_source) {%>
+              <img name="image_pic" id="image_pic" src="<%= cloud_url + recipe?.image_source %>" alt="<%= recipe?.recipe_name %>"/>
+              <input id="image_source" type="hidden" name="image_source" value="<%= recipe?.image_source %>">
+            <% } else { %>
+              <img name="image_pic" id="image_pic" src="" alt=""/>
+              <input id="image_source" type="hidden" name="image_source" value="">
+            <% } %>
+          <% } else { %>
+            <img name="image_pic" id="image_pic" src="" alt="" />
+            <input id="image_source" type="hidden" name="image_source" value="">
+          <% } %>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="prep_time" class="form-label">Recipe Name:</label>
+          <input type="text" name="recipe_name" id="recipe_name" placeholder="Enter Recipe Name" value="<%= locals.recipe ? recipe.recipe_name : '' %>" required <% if (locals.readonly) { %>disabled<%}%> >
+        </div>
+      </div>
+
+
+
+      <% if (locals?.recipe?.author_name && user?._id !== recipe.author) { %>
+        <p>Created By: <%= recipe.author_name %></p>
+      <% } %>
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="description" class="form-label">Description:</label>
+          <textarea type="text" name="description" id="description" placeholder="Enter Description" required <% if (locals.readonly) { %>disabled<%}%> ><%= locals.recipe ? recipe.description : '' %></textarea>
+        </div>
+      </div>
+
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="directions" class="form-label">Directions:</label>
+          <textarea type="text" name="directions" id="directions" placeholder="Enter Directions" <% if (locals.readonly) { %>disabled<%}%> ><%= locals.recipe ? recipe.directions : '' %></textarea>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="servings" class="form-label">Servings:</label>
+          <input type="text" name="servings" id="servings" placeholder="Enter Servings Size" value="<%= locals.recipe ? recipe.servings : '' %>" required <% if (locals.readonly) { %>disabled<%}%>>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="prep_time" class="form-label">Prep Time:</label>
+          <input type="text" name="prep_time" id="prep_time" placeholder="Enter Prep Time" value="<%= locals.recipe ? recipe.prep_time : '' %>" required <% if (locals.readonly) { %>disabled<%}%>>
+        </div>
+      </div>
+
+
+
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label for="cook_time" class="form-label">Cook Time:</label>
+          <input type="text" name="cook_time" id="cook_time" placeholder="Enter Cook Time" value="<%= locals.recipe ? recipe.cook_time : '' %>" required <% if (locals.readonly) { %>disabled<%}%>>
+        </div>
+      </div>
+
+
+      <div class="col-12 mt-3">
+        <h5>Ingredients</h5>
+        <table id="ingredientsList" class="col-10">
+          <tr>
+            <th class="col-3">Ingredient Name</th>
+            <th class="col-3">Amount</th>
+            <th class="col-3">Measurement (tablespoon etc)</th>
+            <th class="col-1"></th>
+          </tr>
+          <% if (locals.recipe) {%>
+          <% recipe.ingredients.forEach(ingredient => { %>
+            <tr>
+              <td class="col-3"><input type="text" name="ingredient_names" value="<%= ingredient.ingredient_name %>"<% if (locals.readonly) { %> disabled<%}%> required></td>
+              <td class="col-3"><input type="text" name="amounts" value="<%= ingredient.amount %>"<% if (locals.readonly) { %> disabled<%}%> required></td>
+              <td class="col-3"><input type="text" name="measurements" value="<%= ingredient.measurement %>" <% if (locals.readonly) { %>disabled<%}%>></td>
+              <% if (!locals.readonly) { %>
+                <td class="col-1"><button type="button" value="Delete" onclick="deleteRow(this)">Delete</button></td>
+              <% } %>
+            </tr>
+          <% }) %>
+          <% } else { %>
+            <tr>
+              <td class="col-3"><input type="text" name="ingredient_names"<% if (locals.readonly) { %> disabled<%}%> required></td>
+              <td class="col-3"><input type="text" name="amounts"<% if (locals.readonly) { %> disabled<%}%> required ></td>
+              <td class="col-3"><input type="text" name="measurements"<% if (locals.readonly) { %> disabled<%}%>></td>
+              <% if (!locals.readonly) { %>
+                <td class="col-1"><button type="button" value="Delete" onclick="deleteRow(this)">Delete</button></td>
+              <% } else { %>
+                <td></td>
+              <% } %>
+            </tr>
+          <% } %>
+
+        </table>
+        <% if (!locals.readonly) { %>
+        <div class="col-12">
+          <button type="button" class="btn btn-outline-primary" id="addIngredientsBtn">+ Ingredient</button>
+        </div>
+        <% } %>
+      </div>
+
+
+
+      <div class="row g-3 mt-2">
+        <div class="col-12">
+          <label>Tags (comma separated):
+            <textarea type="text" name="tag_string" id="tag_string" placeholder="Enter Tags (comma separated)" <% if (locals.readonly) { %>disabled<%}%> ><%= locals.recipe ? recipe.tags.join() : '' %></textarea>
+          </label>
+        </div>
+      </div>
+
+      <% if (locals.user && locals?.recipe?.author_name) { %>
+        <% if  (user.full_name == recipe.author_name) { %>
+          <div class="col-12">
+            <input type="hidden" name="_id" value="<%= recipe._id %>">
+            <input type="hidden" name="author" value="<%= recipe.author %>">
+            <input type="hidden" name="source" value="potluck">
+            <input type="hidden" name="created_date" value="<%= recipe.created_date %>">
+            <button id="editRecipe" type="button" class="btn btn-success">Edit</button>
+            <button id="deleteRecipeBtn" type="submit" class="btn btn-warning" name="send" value="delete">Delete</button>
+            <button type="submit" id="updateRecipeBtn" class="btn btn-success" name="send" value="update">Update Recipe</button>
+          </div>
+        <%}%>
+
+      <%} else if (locals.user) {%>
+        <div class="col-12">
+          <button type="submit" class="btn btn-success" name="send" value="create">Submit Recipe</button>
+        </div>
+      <%}%>
+    </form>
+  </div>
+</div>
+
+
+<%- include('partials/footer')  %>

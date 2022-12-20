@@ -9,13 +9,13 @@ nav {
 }
 
 .navbar-brand {
-    background-color: #EFE7BC;
+    background-color: white;
 }
 
 html, body {
     background-color: #EFE7BC;
     height: 100vh;
-    width: 100vw;
+    width: 99vw;
 }
 
 footer {
@@ -62,8 +62,12 @@ h1 {
     color: #EFE7BC;
     font-weight: bold;
     text-transform: uppercase;
-    -webkit-text-stroke:  2px black;
-    
+    -webkit-text-stroke: 2px black;
+}
+
+.about {
+    font-size: 55px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 .card {
@@ -98,3 +102,6 @@ h1 {
     text-align: center;
 }
 
+.card-img-bottom {
+    height: 20rem;
+}

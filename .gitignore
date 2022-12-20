@@ -41,6 +41,9 @@ build/Release
 node_modules/
 jspm_packages/
 
+# Dependency lock file
+package-lock.json
+
 # TypeScript v1 declaration files
 typings/
 
@@ -70,7 +73,6 @@ typings/
 
 # dotenv environment variables file
 .env
-.env.test
 .env.*
 
 # parcel-bundler cache (https://parceljs.org/)

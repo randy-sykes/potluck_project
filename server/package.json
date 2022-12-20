@@ -4,21 +4,30 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll",
-    "dev": "nodemon index.js"
+    "test-cov": "cross-env NODE_ENV=test nyc --reporter=text mocha --exit --require test/hooks.js",
+    "test": "cross-env NODE_ENV=test mocha --exit --require test/hooks.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=dev nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
     "eslint": "^8.27.0",
+    "mocha": "^10.1.0",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "nyc": "^15.1.0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "dotenv": "^16.0.3",
+    "cross-env": "^7.0.3",
+    "dotenv-flow": "^3.2.0",
+    "ejs": "^3.1.8",
     "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.3",
     "swagger-ui-express": "^4.6.0",
     "yamljs": "^0.3.0"
