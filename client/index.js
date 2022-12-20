@@ -422,6 +422,10 @@ app.get("/logout", (req, res) => {
 REGISTER SECTION
 
 */
+app.get("/register", (req, res) => {
+  res.redirect("/");
+});
+
 app.post("/register", (req, res) => {
   const { email, full_name, password, confirm_password } = req.body;
   let errors = [];
