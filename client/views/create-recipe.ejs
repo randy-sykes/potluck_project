@@ -35,7 +35,7 @@
       <div class="row g-3">
         <div class="col-12">
           <label for="prep_time" class="form-label">Recipe Name:</label>
-          <input type="text" name="recipe_name" id="recipe_name" placeholder="Enter Recipe Name" value="<%= locals.recipe ? recipe.recipe_name : '' %>" required <% if (locals.readonly) { %>disabled<%}%> >
+          <input type="text" name="recipe_name" id="recipe_name" placeholder="Enter Recipe Name" value="<%= locals.recipe ? recipe.recipe_name : '' %>" required <% if (locals.readonly) { %>disabled<%}%> required>
         </div>
       </div>
 
@@ -55,21 +55,21 @@
       <div class="row g-3">
         <div class="col-12">
           <label for="directions" class="form-label">Directions:</label>
-          <textarea type="text" name="directions" id="directions" placeholder="Enter Directions" <% if (locals.readonly) { %>disabled<%}%> ><%= locals.recipe ? recipe.directions : '' %></textarea>
+          <textarea type="text" name="directions" id="directions" placeholder="Enter Directions" <% if (locals.readonly) { %>disabled<%}%> required ><%= locals.recipe ? recipe.directions : '' %></textarea>
         </div>
       </div>
 
       <div class="row g-3">
         <div class="col-12">
           <label for="servings" class="form-label">Servings:</label>
-          <input type="text" name="servings" id="servings" placeholder="Enter Servings Size" value="<%= locals.recipe ? recipe.servings : '' %>" required <% if (locals.readonly) { %>disabled<%}%>>
+          <input type="text" name="servings" id="servings" placeholder="Enter Servings Size" value="<%= locals.recipe ? recipe.servings : '' %>" required <% if (locals.readonly) { %>disabled<%}%> required>
         </div>
       </div>
 
       <div class="row g-3">
         <div class="col-12">
           <label for="prep_time" class="form-label">Prep Time:</label>
-          <input type="text" name="prep_time" id="prep_time" placeholder="Enter Prep Time" value="<%= locals.recipe ? recipe.prep_time : '' %>" required <% if (locals.readonly) { %>disabled<%}%>>
+          <input type="text" name="prep_time" id="prep_time" placeholder="Enter Prep Time" value="<%= locals.recipe ? recipe.prep_time : '' %>" required <% if (locals.readonly) { %>disabled<%}%> required>
         </div>
       </div>
 
@@ -79,7 +79,7 @@
       <div class="row g-3">
         <div class="col-12">
           <label for="cook_time" class="form-label">Cook Time:</label>
-          <input type="text" name="cook_time" id="cook_time" placeholder="Enter Cook Time" value="<%= locals.recipe ? recipe.cook_time : '' %>" required <% if (locals.readonly) { %>disabled<%}%>>
+          <input type="text" name="cook_time" id="cook_time" placeholder="Enter Cook Time" value="<%= locals.recipe ? recipe.cook_time : '' %>" required <% if (locals.readonly) { %>disabled<%}%> required>
         </div>
       </div>
 
